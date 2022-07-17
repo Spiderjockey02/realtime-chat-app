@@ -1,17 +1,39 @@
 const express = require('express'),
-	{ UserSchema, StatSchema, FeedbackSchema } = require('../../models'),
-	{ checkDev } = require('../config/auth'),
-	{ readdirSync } = require('fs'),
-	location = process.cwd() + '/src/website/files/userContent/',
-	{ post } = require('axios'),
-	{ dirTree } = require('../../utils'),
-	{ cloudflare } = require('../../config'),
-	checkDiskSpace = require('check-disk-space').default,
+	{ MessageSchema } = require('../database/models'),
 	router = express.Router();
 
-router.get('/', checkDev, async (req, res) => {
-	
-});
+
+module.exports = (io) => {
+	router.get('/messages', async (req, res) => {
+		MessageSchema.find({}, (err, messages)=> {
+			res.send(messages);
+		});
+	});
+
+	router.get('/messages/:user', (req, res) => {
+		const user = req.params.user;
+		MessageSchema.find({ name: user }, (err, messages) => {
+			res.send(messages);
+		});
+	});
 
 
-module.exports = router
+	router.post('/messages', async (req, res) => {
+		try{
+			const message = new MessageSchema(req.body);
+
+			await message.save();
+			console.log('saved');
+
+			io.emit('message', req.body);
+			res.sendStatus(200);
+		} catch (error) {
+			res.sendStatus(500);
+			return console.log('error', error);
+		} finally {
+			console.log('Message Posted');
+		}
+	});
+
+	return router;
+};
