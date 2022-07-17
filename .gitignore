@@ -1,2 +1,4 @@
 node_modules
 config.js
+src/uploads/*
+!src/uploads/README.md
