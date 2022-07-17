@@ -1,0 +1,26 @@
+{
+  "name": "realtime-chat-app",
+  "version": "1.0.0",
+  "description": "realtime messager",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^3.1.8",
+    "express": "^4.16.3",
+    "mongoose": "^6.3.3",
+    "socket.io": "^4.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "request": "^2.87.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.6",
+    "utf-8-validate": "^5.0.9"
+  }
+}
