@@ -2,3 +2,6 @@ node_modules
 config.js
 src/uploads/*
 !src/uploads/README.md
+.env
+src/utils/logs/roll-????.??.??.log
+prisma/migrations

@@ -4,20 +4,33 @@
   "description": "realtime messager",
   "main": "src/index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "db": "npx prisma studio"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.1.0",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.18.3",
+    "chalk": "^4.1.2",
+    "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
     "ejs": "^3.1.8",
     "express": "^4.16.3",
+    "express-session": "^1.17.3",
+    "memorystore": "^1.6.7",
+    "moment": "^2.29.4",
     "mongoose": "^6.3.3",
-    "socket.io": "^4.5.0",
-    "socketio-file-upload": "^0.7.3"
+    "on-finished": "^2.4.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "simple-node-logger": "^21.8.12",
+    "socket.io": "^4.5.0"
   },
   "devDependencies": {
     "eslint": "^8.19.0",
+    "prisma": "^4.1.0",
     "request": "^2.87.0"
   },
   "optionalDependencies": {

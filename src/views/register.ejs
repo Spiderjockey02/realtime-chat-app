@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<%- include('./blocks/header') %>
+	<body>
+		<div class="container">
+			<%- include('./partials/message', { error })%>
+			<div class="row">
+				<div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+					<div class="card border-0 rounded-3 my-5" style="box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75); top: 20%;">
+						<div class="card-body p-4 p-sm-5">
+							<h5 class="card-title text-center mb-5 fw-light fs-5">Sign up</h5>
+							<form action="/api/user/register" method="POST">
+							<div class="group">
+								<input type="text" required name="name" value="<%= typeof name != 'undefined' ? name : '' %>" >
+								<span class="highlight"></span>
+								<span class="bar"></span>
+								<label>Name</label>
+							</div>
+							<div class="group">
+								<input type="text" required name="email" value="<%= typeof email != 'undefined' ? email : '' %>" >
+								<span class="highlight"></span>
+								<span class="bar"></span>
+								<label>Email</label>
+							</div>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="group">
+										<input type="password" id="show_hide_password" required name="password">
+										<span class="highlight"></span>
+										<span class="bar"></span>
+										<label>Password</label>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="group">
+										<input type="password" id="show_hide_password" required name="password2">
+										<span class="highlight"></span>
+										<span class="bar"></span>
+										<label>Confirm</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+								<label class="form-check-label" for="defaultCheck1">
+									Show password
+								</label>
+							</div>
+							<div class="d-grid" style="float:right">
+								<button class="btn btn-primary text-uppercase fw-bold" type="submit">Sign up</button>
+							</div>
+						</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	</body>
+</html>
+
+<script src="/js/main.js"></script>
+<style>
+  h2 {
+    text-align:center;
+    margin-bottom:50px;
+  }
+  h2 small {
+    font-weight:normal;
+    color:#888;
+    display:block;
+  }
+  .footer {
+    text-align:center;
+  }
+  .footer a  {
+    color:#53B2C8;
+  }
+
+/* form starting stylings ------------------------------- */
+.group {
+  position:relative;
+  margin-bottom:45px;
+}
+input {
+  font-size:18px;
+  padding:10px 10px 10px 5px;
+  display:block;
+  width:100%;
+  border:none;
+  border-bottom:1px solid #757575;
+}
+input:focus {
+  outline:none;
+}
+
+/* LABEL ======================================= */
+label 				 {
+  color:#999;
+  font-size:18px;
+  font-weight:normal;
+  position:absolute;
+  pointer-events:none;
+  left:5px;
+  top:10px;
+  transition:0.2s ease all;
+  -moz-transition:0.2s ease all;
+  -webkit-transition:0.2s ease all;
+}
+
+/* active state */
+input:focus ~ label, input:valid ~ label 		{
+  top:-20px;
+  font-size:14px;
+  color:#5264AE;
+}
+
+/* BOTTOM BARS ================================= */
+.bar {
+  position:relative;
+  display:block;
+  width:100%;
+}
+.bar:before, .bar:after {
+  content:'';
+  height:2px;
+  width:0;
+  bottom:1px;
+  position:absolute;
+  background:#5264AE;
+  transition:0.2s ease all;
+  -moz-transition:0.2s ease all;
+  -webkit-transition:0.2s ease all;
+}
+.bar:before {
+  left:50%;
+}
+.bar:after {
+  right:50%;
+}
+
+/* active state */
+input:focus ~ .bar:before, input:focus ~ .bar:after {
+  width:50%;
+}
+
+/* HIGHLIGHTER ================================== */
+.highlight {
+  position:absolute;
+  height:60%;
+  width:100px;
+  top:25%;
+  left:0;
+  pointer-events:none;
+  opacity:0.5;
+}
+
+/* active state */
+input:focus ~ .highlight {
+  -webkit-animation:inputHighlighter 0.3s ease;
+  -moz-animation:inputHighlighter 0.3s ease;
+  animation:inputHighlighter 0.3s ease;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+@-moz-keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+@keyframes inputHighlighter {
+	from { background:#5264AE; }
+  to 	{ width:0; background:transparent; }
+}
+</style>
