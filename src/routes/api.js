@@ -19,7 +19,6 @@ module.exports = (io) => {
 					userId: req.user.id,
 				});
 				const message = await fetchMessage({ id });
-				console.log(message);
 				io.emit('message', message);
 				res.sendStatus(200);
 			} catch (err) {

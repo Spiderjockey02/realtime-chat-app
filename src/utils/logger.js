@@ -69,8 +69,7 @@ exports.connection = async (req, res) => {
 
 			// log
 			if ((url.startsWith('/js') || url.startsWith('/css'))) {
-				if (require('../config').debug) return require('./logger').log(`${requester} ${method} ${url} ${chalk[color](status)} - ${(response_time ?? '?')} ms`, 'debug');
-				return;
+				return require('./logger').log(`${requester} ${method} ${url} ${chalk[color](status)} - ${(response_time ?? '?')} ms`, 'debug');
 			}
 			require('./logger').log(`${requester} ${method} ${url} ${chalk[color](status)} - ${(response_time ?? '?')} ms`, 'log');
 		});

@@ -9,7 +9,7 @@ const express = require('express'),
 	passport = require('passport'),
 	flash = require('connect-flash'),
 	mStore = MemoryStore(session),
-	{ logger } = require('./utils'),
+	{ logger, formatTag } = require('./utils'),
 	io = require('socket.io')(http);
 
 // Configure passport settings
@@ -52,7 +52,7 @@ io
 	.on('connection', async (socket) => {
 		// If user isn't logged in then disconnect from socket
 		if (socket.request.session.passport == null) return await socket.disconnect();
-		console.log('a user is connected');
+		console.log(`User logged in to WS: ${formatTag(socket.request.session.passport.user)}`);
 
 		// Show ping for client
 		socket.on('ping', (callback) => {

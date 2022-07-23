@@ -1,5 +1,6 @@
 module.exports = {
 	logger: require('./logger'),
 	getIP: require('./functions').getIP,
-	database: require('./database')
+	formatTag: require('./functions').formatTag,
+	database: require('./database'),
 };
