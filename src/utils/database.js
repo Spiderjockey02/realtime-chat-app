@@ -45,4 +45,34 @@ module.exports = {
 		}
 		return null;
 	},
+	fetchMessages: function() {
+		return client.message.findMany({
+			include: {
+				author: true,
+			},
+		});
+	},
+	fetchMessage: function({ id }) {
+		return client.message.findUnique({
+			where: {
+				id,
+			},
+			include: {
+				author: true,
+			},
+		});
+	},
+	createMessage: function(data) {
+		return client.message.create({
+			data: {
+				text: data.text,
+				attachment: '',
+				author: {
+					connect: {
+						id: data.userId,
+					},
+				},
+			},
+		});
+	},
 };

@@ -2,7 +2,9 @@ const express = require('express'),
 	router = express.Router();
 
 router.get('/', (req, res) => {
-	res.render('index');
+	res.render('index', {
+		user: req.isAuthenticated() ? req.user : null,
+	});
 });
 
 router.get('/app', (req, res) => {
@@ -12,7 +14,10 @@ router.get('/app', (req, res) => {
 
 router.get('/login', (req, res) => {
 	if (req.isAuthenticated()) return res.redirect('/app');
-	res.render('login');
+	res.render('login', {
+		error: req.flash('error'),
+		name: req.flash('name'),
+	});
 });
 
 router.get('/register', (req, res) => {
