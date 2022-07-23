@@ -11,26 +11,47 @@ datasource db {
 }
 
 model User {
-  id           String @id @default(cuid())
-  username     String
-  email        String @unique
-  password     String
-  createdAt    DateTime @default(now()) @map("created_at")
-  messages     Message[]
-  servers      Server[]
+  id            String @id @default(cuid())
+  username      String
+  discriminator String @default("0000")
+  avatar        String?
+  bot           Boolean @default(false)
+  system        Boolean @default(false)
+  email         String @unique
+  verified      Boolean @default(false)
+  password      String
+  createdAt     DateTime @default(now()) @map("created_at")
+  messages      Message[]
+  servers       Server[]
+  ownedServers  Server[] @relation("Owner")
 }
 
 model Message {
-  id           String @id @default(cuid())
+  id           String   @id @default(cuid())
   text         String
   attachment   String
   author       User     @relation(fields: [authorId], references: [id])
   authorId     String
+  createdAt     DateTime @default(now()) @map("created_at")
 }
 
 model Server {
-  id           String @id @default(cuid())
+  id           String   @id @default(cuid())
   name         String
+  icon         String
+  owner        User     @relation("Owner", fields: [ownerId], references: [id])
+  ownerId      String
+  roles        Role[]
   createdAt    DateTime @default(now()) @map("created_at")
-  users  User[]
+  users        User[]
+}
+
+model Role {
+  id           String     @id @default(cuid())
+  name         String     @default("new role")
+  color        String     @default("0")
+  hoist        Boolean    @default(false)
+  mentionable  Boolean    @default(false)
+  server       Server     @relation(fields: [serverId], references: [id])
+  serverId     String
 }

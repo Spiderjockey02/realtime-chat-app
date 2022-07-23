@@ -29,23 +29,28 @@
 		<script>
 			var socket = io();
 			  $(() => {
-			      $("#send").click(() => {
-			          sendMessage({name: $("#name").val(), message: $("#message").val()});
-			      })
-
-			      getMessages()
+			    $("#send").click(() => {
+						sendMessage({name: $("#name").val(), message: $("#message").val()});
+					})
+					getMessages()
 			  })
 
 			  socket.on('message', addMessages)
 			  function addMessages(message){
-			    $("#messages").append(`<h4> ${message.name} </h4> <p> ${message.message} </p>`)
+			    $("#messages").append(`<h4> ${message.author.username} <small>(${new Date(message.createdAt).toDateString()})</small></h4> <p> ${message.text} </p>`)
 			  }
+
+				setInterval(() => {
+  				const start = Date.now();
+					socket.emit("ping", () => {
+						console.log(`${new Date().toTimeString().split(' ')[0]} [EVENT]: ping	-	${Date.now() - start}ms`)
+					});
+				}, 10000);
 
 			  function getMessages() {
 			    $.get('http://localhost:3000/api/messages', (data) => {
-						for (var i = 0; i < 5; i++) {
+						console.log(data)
 							data.forEach(addMessages);
-						}
 			    })
 			  }
 				socket.on('uploadProgress' , function (percent) {
