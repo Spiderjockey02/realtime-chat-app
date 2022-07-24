@@ -1,0 +1,13 @@
+<div class="discord-embed-fields">
+	<% for (let i = 0; i < 5; i++) { %>
+    <%- include('./embed-field', {inline: Math.random() < 0.5, fieldTitle: 'hello' })%>
+  <% }%>
+</div>
+
+<style media="screen">
+.discord-embed .discord-embed-fields {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 8px;
+}
+</style>
