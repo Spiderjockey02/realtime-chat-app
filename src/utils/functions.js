@@ -6,7 +6,4 @@ module.exports = {
       (req.connection && req.connection.remoteAddress) ||
       undefined;
 	},
-	formatTag: function(user) {
-		return `${user.username}#${user.discriminator}`;
-	},
 };

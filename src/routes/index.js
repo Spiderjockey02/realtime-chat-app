@@ -1,4 +1,7 @@
 const express = require('express'),
+	{ client } = require('../database'),
+	{ fetchGuilds } = require('../database/server'),
+	{ Server } = require('../classes'),
 	router = express.Router();
 
 router.get('/', (req, res) => {
@@ -7,9 +10,13 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.get('/app', (req, res) => {
+router.get('/app', async (req, res) => {
 	if (!req.isAuthenticated()) return res.redirect('/');
-	res.render('app');
+	const guilds = await fetchGuilds(client, { userId: req.user.id }).then(g => g.map(guild => new Server(guild)));
+	res.render('app', {
+		user: req.user,
+		guilds,
+	});
 });
 
 router.get('/login', (req, res) => {

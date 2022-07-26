@@ -1,7 +1,9 @@
 const express = require('express'),
 	passport = require('passport'),
 	bcrypt = require('bcrypt'),
-	{ findUser, createUser } = require('../../utils/database'),
+	{ client } = require('../../database'),
+	{ findUser, createUser } = require('../../database/user'),
+	{ logger } = require('../../utils'),
 	router = express.Router();
 
 
@@ -17,7 +19,7 @@ router.post('/login', (req, res, next) => {
 		// User logged in
 		req.logIn(user, function(err) {
 			if (err) return next(err);
-			console.log(`User logged in: ${user.email ?? user.name}`);
+			logger.log(`User logged in: ${user.tag}`);
 			return res.redirect('/app');
 		});
 	})(req, res, next);
@@ -26,7 +28,6 @@ router.post('/login', (req, res, next) => {
 // User is creating a new account
 router.post('/register', async (req, res) => {
 	let error;
-	console.log(req.body);
 	const { name, email, password, password2 } = req.body;
 
 	// Check all fields were filled in
@@ -50,7 +51,7 @@ router.post('/register', async (req, res) => {
 	}
 
 	// Check if user already exists
-	const user = await findUser({ email: email });
+	const user = await findUser(client, { email: email });
 	if (user) {
 		req.flash('error', 'Email is already registered!');
 		return res.redirect('/register');
@@ -69,7 +70,7 @@ router.post('/register', async (req, res) => {
 
 	// Save the new user to database + make sure to create folder
 	try {
-		await createUser({
+		await createUser(client, {
 			name : name,
 			email : email,
 			password : Hashpassword,

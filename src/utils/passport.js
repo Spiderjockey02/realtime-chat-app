@@ -1,5 +1,7 @@
 const	{ Strategy } = require('passport-local'),
-	{ findUser } = require('./database'),
+	{ client } = require('../database'),
+	{ findUser } = require('../database/user'),
+	{ User } = require('../classes'),
 	bcrypt = require('bcrypt');
 
 module.exports = function(passport) {
@@ -7,9 +9,8 @@ module.exports = function(passport) {
 	passport.use(new Strategy({ usernameField: 'email' }, async (email, password, done) => {
 		try {
 			// Check database for that email
-			const user = await findUser({ email: email });
-			if (!user) return done(null, false, { message:'Email not registered!' });
-
+			const user = new User(await findUser(client, { email: email }));
+			if (!user) return done(null, false, { message: 'Email not registered!' });
 			// Check if the password is correct
 			bcrypt.compare(password, user.password, (err, isMatch) => {
 				if (err) throw err;
@@ -28,7 +29,7 @@ module.exports = function(passport) {
 		done(null, user);
 	});
 
-	passport.deserializeUser(function(obj, done) {
-		done(null, obj);
+	passport.deserializeUser(function(user, done) {
+		done(null, user);
 	});
 };

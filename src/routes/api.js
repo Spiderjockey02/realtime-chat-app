@@ -3,6 +3,7 @@ const express = require('express'),
 	router = express.Router();
 
 
+/*
 module.exports = (io) => {
 	router
 		.use('/user', require('./user'))
@@ -29,3 +30,4 @@ module.exports = (io) => {
 
 	return router;
 };
+*/

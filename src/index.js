@@ -9,7 +9,8 @@ const express = require('express'),
 	passport = require('passport'),
 	flash = require('connect-flash'),
 	mStore = MemoryStore(session),
-	{ logger, formatTag } = require('./utils'),
+	{ logger } = require('./utils'),
+	{ User } = require('./classes'),
 	io = require('socket.io')(http);
 
 // Configure passport settings
@@ -41,8 +42,8 @@ app.use(express.static(__dirname))
 		next();
 	})
 	.use('/', require('./routes'))
-	.use('/api', require('./routes/api')(io));
-
+	.use('/channel', require('./routes/channel'))
+	.use('/api', require('./routes/api/index.js'));
 
 io
 	.use((socket, next) => {
@@ -52,14 +53,20 @@ io
 	.on('connection', async (socket) => {
 		// If user isn't logged in then disconnect from socket
 		if (socket.request.session.passport == null) return await socket.disconnect();
-		console.log(`User logged in to WS: ${formatTag(socket.request.session.passport.user)}`);
+		const user = new User(socket.request.session.passport.user);
+
+		logger.log(`User logged in to WS: ${user.tag}`);
 
 		// Show ping for client
 		socket.on('ping', (callback) => {
 			callback();
 		});
+
+		socket.on('disconnect', function() {
+			logger.log(`User disconnected from WS: ${user.tag}`);
+		});
 	});
 
 http.listen(port, () => {
-	console.log('server is running on port', port);
+	logger.ready(`server is running on port: ${port}`);
 });
