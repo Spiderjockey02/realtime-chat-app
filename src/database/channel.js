@@ -1,4 +1,11 @@
 module.exports = {
+	deleteChannel: function(client, data) {
+		return client.channel.delete({
+			where: {
+				id: data.id,
+			},
+		});
+	},
 	fetchChannel: function(client, data) {
 		return client.channel.findUnique({
 			where: {

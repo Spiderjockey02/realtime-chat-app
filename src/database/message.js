@@ -1,6 +1,9 @@
 module.exports = {
-	fetchMessages: function(client) {
+	fetchMessages: function(client, data) {
 		return client.message.findMany({
+			where: {
+				channelId: data.id,
+			},
 			include: {
 				author: true,
 			},
@@ -24,6 +27,11 @@ module.exports = {
 				author: {
 					connect: {
 						id: data.userId,
+					},
+				},
+				channel: {
+					connect: {
+						id: data.channelId,
 					},
 				},
 			},

@@ -32,7 +32,9 @@ model Message {
   attachment   String
   author       User     @relation(fields: [authorId], references: [id])
   authorId     String
-  createdAt     DateTime @default(now()) @map("created_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  channel      Channel @relation(fields: [channelId], references: [id])
+  channelId    String
 }
 
 model Server {
@@ -56,7 +58,10 @@ model Channel {
   nsfw        Boolean   @default(false)
   server      Server    @relation(fields: [serverId], references: [id])
   serverId    String
+  parent      Channel?   @relation("category", fields: [parentId], references: [id])
   parentId    String?
+  children    Channel[] @relation("category")
+  messages    Message[]
 }
 
 model Role {

@@ -43,7 +43,7 @@ app.use(express.static(__dirname))
 	})
 	.use('/', require('./routes'))
 	.use('/channel', require('./routes/channel'))
-	.use('/api', require('./routes/api/index.js'));
+	.use('/api', require('./routes/api/index.js')(io));
 
 io
 	.use((socket, next) => {
@@ -60,6 +60,9 @@ io
 		// Show ping for client
 		socket.on('ping', (callback) => {
 			callback();
+		});
+		socket.on('hello', ({ roomName }) => {
+			socket.join(roomName);
 		});
 
 		socket.on('disconnect', function() {
