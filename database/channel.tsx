@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import type Client from './index';
 
 type deleteChannel = {
 	id: string
 }
 
-export async function deleteChannel(client: PrismaClient, data: deleteChannel) {
+export async function deleteChannel(client: Client, data: deleteChannel) {
 	return client.channel.delete({
 		where: {
 			id: data.id,
@@ -16,7 +16,7 @@ type fetchChannel = {
 	id: string
 }
 
-export async function fetchChannel(client: PrismaClient, data: fetchChannel) {
+export async function fetchChannel(client: Client, data: fetchChannel) {
 	return client.channel.findUnique({
 		where: {
 			id: data.id,
@@ -28,7 +28,7 @@ type fetchChannels = {
 	serverId: string
 }
 
-export async function fetchChannels(client: PrismaClient, data: fetchChannels) {
+export async function fetchChannels(client: Client, data: fetchChannels) {
 	return client.channel.findMany({
 		where: {
 			serverId: data.serverId,
@@ -44,7 +44,7 @@ type createChannel = {
 	serverId: string
 }
 
-export async function createChannel(client: PrismaClient, data: createChannel) {
+export async function createChannel(client: Client, data: createChannel) {
 	return client.channel.create({
 		data: {
 			name: data.name,

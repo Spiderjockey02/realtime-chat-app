@@ -26,6 +26,7 @@ export default NextAuth({
 				// Check if the password is correct
 				try {
 					const isMatch = await bcrypt.compare(payload.password, user.password);
+					console.log(user);
 					return (isMatch) ? user : null;
 				} catch (err) {
 					console.log(err);
@@ -39,24 +40,17 @@ export default NextAuth({
 		signIn: '/login',
 	},
 	callbacks: {
-		async jwt({ token, user, account }) {
-			if (account && user) {
-				return {
-					...token,
-					accessToken: user.id,
-					refreshToken: user.id,
-				};
-			}
-
-			return token;
+		async jwt({ token, user, account, isNewUser }) {
+			return {
+				...token,
+				...user,
+				accessToken: account?.id,
+				refreshToken: account?.id,
+			};
 		},
 
-		async session({ session, token }) {
-			session.user.id = token.accessToken;
-			session.user.id = token.refreshToken;
-			session.user.id = token.accessTokenExpires;
-
-			return session;
+		async session({ session, token, user }) {
+			return token;
 		},
 	},
 	theme: {
