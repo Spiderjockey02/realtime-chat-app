@@ -14,18 +14,15 @@ export default NextAuth({
 				email: { label: 'email', type: 'email', placeholder: 'jsmith' },
 				password: { label: 'Password', type: 'password' },
 			},
-			async authorize(credentials, req) {
-				const payload = {
-					email: credentials.email,
-					password: credentials.password,
-				};
+			async authorize(credentials) {
+				if (!credentials?.email || !credentials?.password) return null;
 
 				// Check database for that email
-				const user = await findUser(client, { email: payload.email });
+				const user = await findUser(client, { email: credentials.email });
 				if (!user) return null;
 				// Check if the password is correct
 				try {
-					const isMatch = await bcrypt.compare(payload.password, user.password);
+					const isMatch = await bcrypt.compare(credentials.password, user.password);
 					console.log(user);
 					return (isMatch) ? user : null;
 				} catch (err) {
@@ -40,7 +37,7 @@ export default NextAuth({
 		signIn: '/login',
 	},
 	callbacks: {
-		async jwt({ token, user, account, isNewUser }) {
+		async jwt({ token, user, account }) {
 			return {
 				...token,
 				...user,
@@ -49,7 +46,7 @@ export default NextAuth({
 			};
 		},
 
-		async session({ session, token, user }) {
+		async session({ token }) {
 			return token;
 		},
 	},
