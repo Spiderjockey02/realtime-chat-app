@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import client from './index';
 
 type fetchMessages = {
 	id: string
 }
 
-export async function fetchMessages(client: PrismaClient, data: fetchMessages) {
+export async function fetchMessages(data: fetchMessages) {
 	return client.message.findMany({
 		where: {
 			channelId: data.id,
@@ -18,7 +18,7 @@ export async function fetchMessages(client: PrismaClient, data: fetchMessages) {
 type fetchMessage = {
 	id: string
 }
-export async function fetchMessage(client: PrismaClient, { id }: fetchMessage) {
+export async function fetchMessage({ id }: fetchMessage) {
 	return client.message.findUnique({
 		where: {
 			id,
@@ -35,7 +35,7 @@ type createMessage = {
 		channelId: string
 }
 
-export async function createMessage(client: PrismaClient, data: createMessage) {
+export async function createMessage(data: createMessage) {
 	return client.message.create({
 		data: {
 			text: data.text,

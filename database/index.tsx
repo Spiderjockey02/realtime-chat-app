@@ -29,4 +29,4 @@ client.$on('error', (data) => {
 	console.log(data.message);
 });
 
-export default client ;
+export default client;

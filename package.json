@@ -11,13 +11,17 @@
     "@prisma/client": "^4.1.0",
     "bcrypt": "^5.0.1",
     "bootstrap": "^5.2.0",
+    "chalk": "^5.0.1",
     "formik": "^2.2.9",
     "jquery": "^3.6.0",
     "moment": "^2.29.4",
     "next": "latest",
     "next-auth": "^4.10.2",
+    "node-fetch": "^2.6.1",
+    "on-finished": "^2.4.1",
     "react": "17.0.2",
     "react-dom": "^17.0.2",
+    "simple-node-logger": "^21.8.12",
     "yup": "^0.32.11"
   },
   "devDependencies": {
