@@ -45,8 +45,7 @@ export default NextAuth({
 				refreshToken: account?.id,
 			};
 		},
-
-		async session({ token }) {
+		session({ token }) {
 			return token;
 		},
 	},

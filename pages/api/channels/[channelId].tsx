@@ -1,8 +1,14 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { fetchChannel, deleteChannel } from '../../../database/channel';
+
 export default async function handler(req, res) {
+	const channelId = req.query.channelId;
+
+
 	switch (req.method) {
 		case 'GET':
 			try {
-				const channel = await fetchChannel(client, { id: req.params.channelId });
+				const channel = await fetchChannel({ id: channelId });
 				res.json(channel ?? { error: 'Incorrect channel Id' });
 			} catch (err) {
 				console.log(err);
@@ -13,7 +19,7 @@ export default async function handler(req, res) {
 			break;
 		case 'DELETE':
 			try {
-				const channel = await deleteChannel(client, { id: req.params.channelId });
+				const channel = await deleteChannel({ id: channelId });
 				res.json(channel ?? { error: 'Incorrect channel Id' });
 			} catch (err) {
 				console.log(err);
@@ -21,9 +27,6 @@ export default async function handler(req, res) {
 			}
 			break;
 		default:
-
+			break;
 	}
-
-	const { pid } = req.query;
-	res.end(`Post: ${pid}`);
 }
