@@ -1,11 +1,11 @@
 import { useSession } from 'next-auth/react';
 import '@popperjs/core';
 import ServerSelector from '../../components/panels/server-selector';
-import ChannelSelector from '../../components/panels/channel-selector';
-import TextSection from '../../components/panels/text-channel';
-import MemberSection from '../../components/panels/member-section';
+import DMSelector from '../../components/panels/DM-selector';
+import FriendTab from '../../components/panels/friend-tab';
+import ActiveNow from '../../components/panels/active-now';
 
-import React, { useState } from 'react';
+import React from 'react';
 
 
 function HomePage() {
@@ -25,14 +25,15 @@ function HomePage() {
 			<div className="container-fluid">
 				<div className="row" style={{ height: '100vh' }}>
 					<ServerSelector />
-					<ChannelSelector />
-					<TextSection />
-					<MemberSection />
+					<DMSelector />
+					<FriendTab />
+					<ActiveNow />
 				</div>
 			</div>
 		);
 
 	}
 }
+
 
 export default HomePage;

@@ -4,11 +4,14 @@ import ServerSelector from '../../components/panels/server-selector';
 import ChannelSelector from '../../components/panels/channel-selector';
 import TextSection from '../../components/panels/text-channel';
 import MemberSection from '../../components/panels/member-section';
+import type { Guild } from '../../types/datatypes';
+import type { GetServerSidePropsContext } from 'next';
 
-import React from 'react';
+interface Props {
+	server: Guild
+}
 
-
-function HomePage({ channels }) {
+function HomePage({ server }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 
@@ -25,9 +28,9 @@ function HomePage({ channels }) {
 			<div className="container-fluid">
 				<div className="row" style={{ height: '100vh' }}>
 					<ServerSelector />
-					<ChannelSelector data={channels} />
+					<ChannelSelector guild={server} type="GUILD"/>
 					<TextSection />
-					<MemberSection />
+					<MemberSection guild={server}/>
 				</div>
 			</div>
 		);
@@ -36,13 +39,13 @@ function HomePage({ channels }) {
 }
 
 // This gets called on every request
-export async function getServerSideProps() {
-	console.log('hello');
+export async function getServerSideProps(context: GetServerSidePropsContext) {
 	// Fetch data from external API
-	const res = await fetch('http://192.168.0.14:3000/api/guilds/cl68eygov0061n0uvm7baw99y');
+	console.log(context);
+	const res = await fetch(`http://192.168.0.14:3000/api/guilds/${context.params?.Id?.[0]}`);
 	const data = await res.json();
 
 	// Pass data to the page via props
-	return { props: { channels: data } };
+	return { props: { server: data } };
 }
 export default HomePage;
