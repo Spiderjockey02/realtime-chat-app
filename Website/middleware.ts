@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 				const channel = req.nextUrl.pathname.split('/')[3];
 				if (channel) {
 					const res2 = await fetch(`${process.env.NEXTAUTH_URL}/api/channels/${req.nextUrl.pathname.split('/')[3]}`);
-					const channelData = res.json();
+					const channelData = await res2.json();
 
 					if (!channelData.members.includes(session.id)) {
 						NextResponse.redirect(`${process.env.NEXTAUTH_URL}/channels/${guildId}/${guildData.mainChannel}`);

@@ -22,4 +22,6 @@ export type User = {
 export type Channel = {
   id: string
   name: string
+  type: 'TEXT' | 'VOICE' | 'CATEGORY'
+  children: Channel[]
 }

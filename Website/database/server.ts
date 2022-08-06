@@ -54,7 +54,11 @@ export async function fetchGuild(data: fetchGuild) {
 		include: {
 			users: true,
 			roles: true,
-			channels: true,
+			channels: {
+				include: {
+					children: true,
+				},
+			},
 		},
 	});
 }
