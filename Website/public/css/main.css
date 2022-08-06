@@ -1,9 +1,3 @@
-.home-icon {
-  width: 48px;height:48px;background-color: #36393f;border-radius: 50%;display: inline-block;
-}
-.add-icon {
-  width: 48px;height:48px;background-color: #36393f;border-radius: 50%;display: inline-block;
-}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -20,6 +14,7 @@
   background: #202225;
 	border-radius: 5px;
 }
+
 .server-selector {
 	background-color: #202225;
 	width: 72px;
@@ -29,22 +24,6 @@
 }
 .server-selector *:hover {
 	cursor: pointer;
-}
-.server-icon-bg {
-  width: 48px;
-  height:48px;
-  background-color: #36393f;
-  border-radius: 50%;
-  display: inline-block;
-}
-.server-icon-text {
-  width:48px;height:48px;display: table-cell;color:white;vertical-align:middle;text-align:center;
-}
-.icon {
-  display: block;
-  margin: 0 auto;
-  color: #3ba55d;
-  margin-top: 8px;
 }
 .channel-selector {
 	background-color: #2f3136;

@@ -24,4 +24,5 @@ export type Channel = {
   name: string
   type: 'TEXT' | 'VOICE' | 'CATEGORY'
   children: Channel[]
+  parentId?: string
 }

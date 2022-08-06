@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model channel {
+  id            String    @id
+  name          String
+  type          String
+  position      Int
+  topic         String
+  nsfw          Boolean   @default(false)
+  serverId      String
+  parentId      String?
+  channel       channel?  @relation("channelTochannel", fields: [parentId], references: [id], map: "Channel_parentId_fkey")
+  server        server    @relation(fields: [serverId], references: [id], map: "Channel_serverId_fkey")
+  other_channel channel[] @relation("channelTochannel")
+  message       message[]
+
+  @@index([parentId], map: "Channel_parentId_fkey")
+  @@index([serverId], map: "Channel_serverId_fkey")
+}
+
+model message {
+  id         String   @id
+  text       String
+  attachment String
+  authorId   String
+  created_at DateTime @default(now())
+  channelId  String
+  user       user     @relation(fields: [authorId], references: [id], map: "Message_authorId_fkey")
+  channel    channel  @relation(fields: [channelId], references: [id], map: "Message_channelId_fkey")
+
+  @@index([authorId], map: "Message_authorId_fkey")
+  @@index([channelId], map: "Message_channelId_fkey")
+}
+
+model role {
+  id          String  @id
+  name        String  @default("new role")
+  color       String  @default("0")
+  hoist       Boolean @default(false)
+  mentionable Boolean @default(false)
+  serverId    String
+  server      server  @relation(fields: [serverId], references: [id], map: "Role_serverId_fkey")
+
+  @@index([serverId], map: "Role_serverId_fkey")
+}
+
+model server {
+  id                String    @id
+  name              String
+  icon              String?
+  ownerId           String
+  created_at        DateTime  @default(now())
+  user_serverTouser user      @relation(fields: [ownerId], references: [id], map: "Server_ownerId_fkey")
+  channel           channel[]
+  role              role[]
+  user_servertouser user[]    @relation("servertouser")
+
+  @@index([ownerId], map: "Server_ownerId_fkey")
+}
+
+model user {
+  id                  String    @id
+  username            String
+  discriminator       String    @default("0000")
+  avatar              String?
+  bot                 Boolean   @default(false)
+  system              Boolean   @default(false)
+  email               String    @unique(map: "User_email_key")
+  verified            Boolean   @default(false)
+  password            String
+  created_at          DateTime  @default(now())
+  message             message[]
+  server_serverTouser server[]
+  server_servertouser server[]  @relation("servertouser")
+}
