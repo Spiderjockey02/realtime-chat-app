@@ -7,7 +7,7 @@ type createServer = {
 }
 // Create a server with 1 text, 1 voice and 2 category channels
 export async function createServer(data: createServer) {
-	const server = await client.server.create({
+	const server = await client.guild.create({
 		data: {
 			name: data.name,
 			owner: {
@@ -35,7 +35,7 @@ type fetchServers = {
 
 // Fetch all guilds with the same owner
 export async function fetchServers(data: fetchServers) {
-	return client.server.findMany({
+	return client.guild.findMany({
 		where: {
 			ownerId: data.userId,
 		},
@@ -47,12 +47,12 @@ type fetchServer = {
 }
 // Fetch a guild by ID
 export async function fetchServer(data: fetchServer) {
-	return client.server.findUnique({
+	return client.guild.findUnique({
 		where: {
 			id: data.id,
 		},
 		include: {
-			users: true,
+			members: true,
 			roles: true,
 			channels: {
 				include: {

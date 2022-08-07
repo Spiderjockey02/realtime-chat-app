@@ -39,7 +39,6 @@ export async function createMessage(data: createMessage) {
 	return client.message.create({
 		data: {
 			text: data.text,
-			attachment: '',
 			author: {
 				connect: {
 					id: data.userId,

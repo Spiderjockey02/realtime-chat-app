@@ -29,17 +29,11 @@ export function	findUser(data: findUser) {
 			where: {
 				email: data.email,
 			},
-			include: {
-				servers: true,
-			},
 		});
 	} else if (data.id) {
 		return client.user.findUnique({
 			where: {
 				id: data.id,
-			},
-			include: {
-				servers: true,
 			},
 		});
 	}

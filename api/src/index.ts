@@ -29,25 +29,16 @@ app.use(express.static(__dirname))
 	.use(express.static('./src/public'))
 	.use(compression())
 	.use(sessionMiddleware)
-	.use((req, res, next) => {
-		// if (req.originalUrl !== '/favicon.ico') logger.connection(req, res);
-		next();
-	})
 	.use('/api', route.route(io));
 
 io
+	/*
 	.use((socket, next) => {
 		// Wrap the express middleware
 		// sessionMiddleware(socket.request, {}, next);
 	})
+	*/
 	.on('connection', async (socket) => {
-		/*
-		// If user isn't logged in then disconnect from socket
-		if (socket.request.session.passport == null) return await socket.disconnect();
-		const user = new User(socket.request.session.passport.user);
-
-		logger.log(`User logged in to WS: ${user.tag}`);
-
 		// Show ping for client
 		socket.on('ping', (callback) => {
 			callback();
@@ -57,9 +48,8 @@ io
 		});
 
 		socket.on('disconnect', function() {
-			logger.log(`User disconnected from WS: ${user.tag}`);
+			console.log('User disconnected from WS');
 		});
-		*/
 	});
 server.listen(process.env.port, () => {
 	// tslint:disable-next-line:no-console

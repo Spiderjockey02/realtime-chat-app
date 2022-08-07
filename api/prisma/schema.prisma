@@ -22,14 +22,17 @@ model User {
   password      String
   createdAt     DateTime @default(now()) @map("created_at")
   messages      Message[]
-  servers       Server[]
-  ownedServers  Server[] @relation("Owner")
+  ownedServers  Guild[] @relation("Owner")
+
+  @@unique([username, discriminator])
+  @@map("users")
 }
 
 model Message {
   id           String   @id @default(cuid())
   text         String
-  attachment   String
+  attachments  MessageAttachment[]
+  embeds       Embed[]
   author       User     @relation(fields: [authorId], references: [id])
   authorId     String
   createdAt    DateTime @default(now()) @map("created_at")
@@ -37,16 +40,78 @@ model Message {
   channelId    String
 }
 
-model Server {
+model MessageAttachment {
+  id         String @id
+  name       String @db.VarChar(32)
+  messageId  String @map("message_id")
+
+  message  Message  @relation(fields: [messageId], references: [id])
+
+  @@map("message_attachments")
+}
+
+model Embed {
+  id     String @id @default(cuid())
+  message        Message     @relation(fields: [messageId], references: [id])
+  messageId      String
+
+  title  String?
+  description String?
+  url String?
+  timestamp String?
+  color Int
+  footer Json
+}
+
+
+model Guild {
   id           String   @id @default(cuid())
   name         String
   icon         String?
   owner        User     @relation("Owner", fields: [ownerId], references: [id])
   ownerId      String
-  roles        Role[]
+  roles        GuildRole[]
   createdAt    DateTime @default(now()) @map("created_at")
-  users        User[]
+  members      GuildMember[]
   channels     Channel[]
+}
+
+model GuildMember {
+  id       String      @id @default(cuid())
+  userId   String
+  guild    Guild     @relation(fields: [guildId], references: [id])
+  guildId  String
+  nickname String      @db.VarChar(32)
+  roles GuildMemberRole[]
+
+  @@map("guild_members")
+}
+
+model GuildRole {
+  id          String     @id @default(cuid())
+  name        String  @db.VarChar(15)
+  color       Int
+  hoisted     Boolean
+  mentionable Boolean
+  position    Int
+  guildId     String  @map("guild_id")
+
+  guild       Guild   @relation(fields: [guildId], references: [id])
+  members     GuildMemberRole[]
+
+  @@index(position)
+}
+
+model GuildMemberRole {
+  id       String      @id @default(cuid())
+  guildMemberId String @map("guild_member_id")
+  roleId        String @map("role_id")
+
+  guildMember GuildMember @relation(fields: [guildMemberId], references: [id])
+  role        GuildRole   @relation(fields: [roleId], references: [id])
+
+  @@unique([guildMemberId, roleId])
+  @@map("guild_member_roles")
 }
 
 model Channel {
@@ -56,7 +121,7 @@ model Channel {
   position    Int
   topic       String
   nsfw        Boolean   @default(false)
-  server      Server    @relation(fields: [serverId], references: [id])
+  server      Guild    @relation(fields: [serverId], references: [id])
   serverId    String
   parent      Channel?   @relation("category", fields: [parentId], references: [id])
   parentId    String?
@@ -72,6 +137,5 @@ model Role {
   color        String     @default("0")
   hoist        Boolean    @default(false)
   mentionable  Boolean    @default(false)
-  server       Server     @relation(fields: [serverId], references: [id])
   serverId     String
 }
