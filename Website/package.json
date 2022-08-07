@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "db": "npx prisma studio"
+    "start": "next start"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.5",

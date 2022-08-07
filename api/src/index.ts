@@ -9,8 +9,18 @@ import MemoryStore from 'memorystore';
 const mStore = MemoryStore(session);
 import { Server } from 'socket.io';
 import * as dotenv from 'dotenv';
-dotenv.config({ path: __dirname + '/.env' });
-const io = new Server(server);
+dotenv.config({ path: `${process.cwd()}/.env` });
+
+console.log(process.cwd());
+console.log(process.env);
+const io = new Server(server, {
+	cors: {
+		origin: process.env.NEXTAUTH_URL,
+		methods: ['GET', 'POST'],
+		allowedHeaders: ['my-custom-header'],
+		credentials: true,
+	},
+});
 import route from './routes';
 
 
