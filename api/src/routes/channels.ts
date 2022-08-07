@@ -1,10 +1,10 @@
 import express from 'express';
 import { fetchChannel, deleteChannel } from '../database/channel';
 import { fetchMessages, fetchMessage, createMessage } from '../database/message';
-
+import { Server } from 'socket.io';
 const	router = express.Router();
 
-module.exports = (io) => {
+export default function(io: Server) {
 	router
 	// Get the channel
 		.get('/:channelId', async (req, res) => {
@@ -15,10 +15,6 @@ module.exports = (io) => {
 				console.log(err);
 				res.json({ error: 'An error occured fetching channel' });
 			}
-		})
-	// Update channel (e.g name, etc)
-		.patch('/:channelId', async (req, res) => {
-
 		})
 	// Delete a channel
 		.delete('/:channelId', async (req, res) => {
@@ -47,7 +43,7 @@ module.exports = (io) => {
 			try {
 				const { id } = await createMessage({
 					text: req.body.message,
-					userId: req.user.id,
+					userId: '1000',
 					channelId: req.params.channelId,
 				});
 				const message = await fetchMessage({ id });
@@ -57,15 +53,7 @@ module.exports = (io) => {
 				console.log(err);
 				res.sendStatus(500);
 			}
-		})
-	// Update a message
-		.patch('/:channelId/messages/:messageId', async (req, res) => {
-
-		})
-	// Delete a message
-		.delete('/:channelId/messages/:messageId', async (req, res) => {
-
 		});
 
 	return router;
-};
+}

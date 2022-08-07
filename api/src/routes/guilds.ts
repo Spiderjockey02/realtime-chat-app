@@ -1,14 +1,13 @@
-const express = require('express'),
-	{ client } = require('../../database'),
-	{ createServer, fetchServer, updateServer } = require('../../database/server'),
-	router = express.Router();
+import express from 'express';
+import { createServer, fetchServer, updateServer } from '../database/server';
+const	router = express.Router();
 
 router
 	.post('/', async (req, res) => {
 		try {
-			await createServer(client, {
+			await createServer({
 				name: req.body.server_name,
-				userId: req.user.id,
+				userId: '1000',
 			});
 			res.redirect('/app');
 		} catch (err) {
@@ -18,7 +17,7 @@ router
 	})
 	.get('/:id', async (req, res) => {
 		try {
-			await fetchServer(client, {});
+			await fetchServer({ id: req.params.id });
 		} catch (err) {
 			console.log(err);
 			res.json({ error: 'An error occured when fetching server' });
@@ -26,7 +25,7 @@ router
 	})
 	.patch('/:id', async (req, res) => {
 		try {
-			await updateServer(client, {});
+			await updateServer({ id: req.params.id });
 		} catch (err) {
 			console.log(err);
 			res.json({ error: 'An error occured when updating server' });

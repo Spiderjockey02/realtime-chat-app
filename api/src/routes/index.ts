@@ -16,4 +16,4 @@ function route(io: Server) {
 	return router;
 }
 
-export default route;
+export default { route };

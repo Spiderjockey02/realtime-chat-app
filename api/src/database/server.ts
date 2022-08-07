@@ -29,12 +29,12 @@ export async function createServer(data: createServer) {
 		position: await getNextPosition({ serverId: server.id }) });
 }
 
-type fetchGuilds = {
+type fetchServers = {
 	userId: string
 }
 
 // Fetch all guilds with the same owner
-export async function fetchGuilds(data: fetchGuilds) {
+export async function fetchServers(data: fetchServers) {
 	return client.server.findMany({
 		where: {
 			ownerId: data.userId,
@@ -42,11 +42,11 @@ export async function fetchGuilds(data: fetchGuilds) {
 	});
 }
 
-type fetchGuild = {
+type fetchServer = {
 	id: string
 }
 // Fetch a guild by ID
-export async function fetchGuild(data: fetchGuild) {
+export async function fetchServer(data: fetchServer) {
 	return client.server.findUnique({
 		where: {
 			id: data.id,
@@ -63,11 +63,23 @@ export async function fetchGuild(data: fetchGuild) {
 	});
 }
 
-type deleteGuild = {
+type deleteServer = {
 	id: string
 }
 
-export async function deleteGuild(data: deleteGuild) {
+export async function deleteServer(data: deleteServer) {
+	return client.channel.delete({
+		where: {
+			id: data.id,
+		},
+	});
+}
+
+type updateServer = {
+	id: string
+}
+
+export async function updateServer(data:updateServer) {
 	return client.channel.delete({
 		where: {
 			id: data.id,

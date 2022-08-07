@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,76 +10,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model channel {
-  id            String    @id
-  name          String
-  type          String
-  position      Int
-  topic         String
-  nsfw          Boolean   @default(false)
-  serverId      String
-  parentId      String?
-  channel       channel?  @relation("channelTochannel", fields: [parentId], references: [id], map: "Channel_parentId_fkey")
-  server        server    @relation(fields: [serverId], references: [id], map: "Channel_serverId_fkey")
-  other_channel channel[] @relation("channelTochannel")
-  message       message[]
-
-  @@index([parentId], map: "Channel_parentId_fkey")
-  @@index([serverId], map: "Channel_serverId_fkey")
+model User {
+  id            String @id @default(cuid())
+  username      String
+  discriminator String @default("0000")
+  avatar        String?
+  bot           Boolean @default(false)
+  system        Boolean @default(false)
+  email         String @unique
+  verified      Boolean @default(false)
+  password      String
+  createdAt     DateTime @default(now()) @map("created_at")
+  messages      Message[]
+  servers       Server[]
+  ownedServers  Server[] @relation("Owner")
 }
 
-model message {
-  id         String   @id
-  text       String
-  attachment String
-  authorId   String
-  created_at DateTime @default(now())
-  channelId  String
-  user       user     @relation(fields: [authorId], references: [id], map: "Message_authorId_fkey")
-  channel    channel  @relation(fields: [channelId], references: [id], map: "Message_channelId_fkey")
-
-  @@index([authorId], map: "Message_authorId_fkey")
-  @@index([channelId], map: "Message_channelId_fkey")
+model Message {
+  id           String   @id @default(cuid())
+  text         String
+  attachment   String
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     String
+  createdAt    DateTime @default(now()) @map("created_at")
+  channel      Channel @relation(fields: [channelId], references: [id])
+  channelId    String
 }
 
-model role {
-  id          String  @id
-  name        String  @default("new role")
-  color       String  @default("0")
-  hoist       Boolean @default(false)
-  mentionable Boolean @default(false)
+model Server {
+  id           String   @id @default(cuid())
+  name         String
+  icon         String?
+  owner        User     @relation("Owner", fields: [ownerId], references: [id])
+  ownerId      String
+  roles        Role[]
+  createdAt    DateTime @default(now()) @map("created_at")
+  users        User[]
+  channels     Channel[]
+}
+
+model Channel {
+  id          String @id @default(cuid())
+  name        String
+  type        String
+  position    Int
+  topic       String
+  nsfw        Boolean   @default(false)
+  server      Server    @relation(fields: [serverId], references: [id])
   serverId    String
-  server      server  @relation(fields: [serverId], references: [id], map: "Role_serverId_fkey")
+  parent      Channel?   @relation("category", fields: [parentId], references: [id])
+  parentId    String?
+  children    Channel[] @relation("category")
+  messages    Message[]
 
-  @@index([serverId], map: "Role_serverId_fkey")
+  @@index(position)
 }
 
-model server {
-  id                String    @id
-  name              String
-  icon              String?
-  ownerId           String
-  created_at        DateTime  @default(now())
-  user_serverTouser user      @relation(fields: [ownerId], references: [id], map: "Server_ownerId_fkey")
-  channel           channel[]
-  role              role[]
-  user_servertouser user[]    @relation("servertouser")
-
-  @@index([ownerId], map: "Server_ownerId_fkey")
-}
-
-model user {
-  id                  String    @id
-  username            String
-  discriminator       String    @default("0000")
-  avatar              String?
-  bot                 Boolean   @default(false)
-  system              Boolean   @default(false)
-  email               String    @unique(map: "User_email_key")
-  verified            Boolean   @default(false)
-  password            String
-  created_at          DateTime  @default(now())
-  message             message[]
-  server_serverTouser server[]
-  server_servertouser server[]  @relation("servertouser")
+model Role {
+  id           String     @id @default(cuid())
+  name         String     @default("new role")
+  color        String     @default("0")
+  hoist        Boolean    @default(false)
+  mentionable  Boolean    @default(false)
+  server       Server     @relation(fields: [serverId], references: [id])
+  serverId     String
 }

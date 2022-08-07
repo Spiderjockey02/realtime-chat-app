@@ -1,35 +1,15 @@
-const express = require('express'),
-	{ client } = require('../../database'),
-	{ createServer, fetchServer, updateServer } = require('../../database/server'),
-	router = express.Router();
+import express from 'express';
+import { findUser } from '../database/user';
+const	router = express.Router();
 
 router
-	.post('/', async (req, res) => {
-		try {
-			await createServer(client, {
-				name: req.body.server_name,
-				userId: req.user.id,
-			});
-			res.redirect('/app');
-		} catch (err) {
-			console.log(err);
-			res.json({ error: 'An error occured when creating new server' });
-		}
-	})
 	.get('/:id', async (req, res) => {
 		try {
-			await fetchServer(client, {});
+			const user = await findUser({ id: req.params.id });
+			res.json(user ?? { error: 'Missing user' });
 		} catch (err) {
 			console.log(err);
 			res.json({ error: 'An error occured when fetching server' });
-		}
-	})
-	.patch('/:id', async (req, res) => {
-		try {
-			await updateServer(client, {});
-		} catch (err) {
-			console.log(err);
-			res.json({ error: 'An error occured when updating server' });
 		}
 	});
 

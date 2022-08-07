@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import client from './index';
 
 type createUser = {
 	email: string
@@ -7,7 +7,7 @@ type createUser = {
 }
 
 // Create a user
-export function createUser(client: PrismaClient, data: createUser) {
+export function createUser(data: createUser) {
 	return client.user.create({
 		data: {
 			email: data.email,
@@ -18,15 +18,25 @@ export function createUser(client: PrismaClient, data: createUser) {
 }
 
 type findUser = {
-	email: string
+	email?: string
+	id?: string
 }
 
 // Find a user by email (for login)
-export function	findUser(client: PrismaClient, data: findUser) {
+export function	findUser(data: findUser) {
 	if (data.email) {
 		return client.user.findUnique({
 			where: {
 				email: data.email,
+			},
+			include: {
+				servers: true,
+			},
+		});
+	} else if (data.id) {
+		return client.user.findUnique({
+			where: {
+				id: data.id,
 			},
 			include: {
 				servers: true,
@@ -43,7 +53,7 @@ type updateUser = {
 }
 
 // Update a user (Username, avatar)
-export function	updateUser(client: PrismaClient, data: updateUser) {
+export function	updateUser(data: updateUser) {
 	return client.user.update({
 		where: {
 			id: data.id,

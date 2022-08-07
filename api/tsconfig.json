@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
     "esModuleInterop": true,
-    "lib": ["es2020"],
-    "module": "es2022",
-    "preserveConstEnums": true,
+    "target": "es6",
+    "noImplicitAny": true,
     "moduleResolution": "node",
-    "strict": true,
     "sourceMap": true,
-    "target": "es2022",
-    "types": ["node"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
   },
-  "ts-node": {
-    "esm": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*"
+  ]
 }

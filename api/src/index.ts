@@ -1,20 +1,18 @@
 import express, { Express } from 'express';
 import bodyParser from 'body-parser';
-const app: Express = express(),
-	http = new (await import('http')).Server(app);
+const app: Express = express();
+import * as http from 'http';
+const server = http.createServer(app);
 import compression from 'compression';
 import session from 'express-session';
 import MemoryStore from 'memorystore';
 const mStore = MemoryStore(session);
-import Logger from './utils/logger';
 import { Server } from 'socket.io';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/.env' });
-const io = new Server(http);
-import routes from './routes';
+const io = new Server(server);
+import route from './routes';
 
-
-const logger = new Logger();
 
 // Session handler
 const sessionMiddleware = session({
@@ -31,13 +29,11 @@ app.use(express.static(__dirname))
 	.use(express.static('./src/public'))
 	.use(compression())
 	.use(sessionMiddleware)
-	.set('view engine', 'ejs')
-	.set('views', './src/views')
 	.use((req, res, next) => {
-		if (req.originalUrl !== '/favicon.ico') logger.connection(req, res);
+		// if (req.originalUrl !== '/favicon.ico') logger.connection(req, res);
 		next();
 	})
-	.use('/api', routes(io));
+	.use('/api', route.route(io));
 
 io
 	.use((socket, next) => {
@@ -65,7 +61,7 @@ io
 		});
 		*/
 	});
-
-http.listen(process.env.port, () => {
-	logger.ready(`server is running on port: ${process.env.port}`);
+server.listen(process.env.port, () => {
+	// tslint:disable-next-line:no-console
+	console.log(`server started at http://localhost:${ process.env.port }`);
 });
