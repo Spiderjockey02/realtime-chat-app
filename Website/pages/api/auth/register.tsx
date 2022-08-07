@@ -1,5 +1,3 @@
-import client from '../../../database/index';
-import { findUser, createUser } from '../../../database/user';
 import bcrypt from 'bcrypt';
 
 export default async function handler(req, res) {
@@ -21,11 +19,6 @@ export default async function handler(req, res) {
 		return res.redirect('/register');
 	}
 
-	// Check if user already exists
-	const user = await findUser(client, { email: email });
-	if (user) {
-		return res.redirect('/register');
-	}
 
 	// Encrypt password (Dont save raw password to database)
 	let Hashpassword;
@@ -40,11 +33,20 @@ export default async function handler(req, res) {
 
 	// Save the new user to database + make sure to create folder
 	try {
-		await createUser(client, {
-			name : name,
-			email : email,
-			password : Hashpassword,
+		const g = await fetch(`${process.env.APIURL}/api/auth/register`, {
+			method: 'post',
+			headers: {
+				'content-type': 'application/json;charset=UTF-8',
+			},
+			body: JSON.stringify({
+				password: Hashpassword,
+				email: email,
+				username: name,
+				code: '100',
+			}),
 		});
+		console.log(g);
+		console.log(await g.json());
 		console.log(`New user: ${email}`);
 		res.redirect('/');
 	} catch (err) {

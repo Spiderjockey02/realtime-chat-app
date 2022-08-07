@@ -1,8 +1,5 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import client from '../../../database/index';
-import { findUser } from '../../../database/user';
-import bcrypt from 'bcrypt';
 
 export default NextAuth({
 	// Configure one or more authentication providers
@@ -16,19 +13,21 @@ export default NextAuth({
 			},
 			async authorize(credentials) {
 				if (!credentials?.email || !credentials?.password) return null;
+				const res = await fetch(`${process.env.APIURL}/api/auth/login`, {
+					method: 'post',
+					headers: {
+						'content-type': 'application/json;charset=UTF-8',
+					},
+					body: JSON.stringify({
+						password: credentials.password,
+						email: credentials.email,
+						code: '100',
+					}),
+				});
 
-				// Check database for that email
-				const user = await findUser(client, { email: credentials.email });
-				if (!user) return null;
-				// Check if the password is correct
-				try {
-					const isMatch = await bcrypt.compare(credentials.password, user.password);
-					console.log(user);
-					return (isMatch) ? user : null;
-				} catch (err) {
-					console.log(err);
-					return null;
-				}
+				const data = await res.json();
+				return (data.success) ? data.user : null;
+
 			},
 		}),
 	],
