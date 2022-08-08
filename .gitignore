@@ -3,7 +3,7 @@
 # dependencies
 */node_modules
 /.pnp
-dist
+*/dist
 .pnp.js
 # testing
 /coverage
