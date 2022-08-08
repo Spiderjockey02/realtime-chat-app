@@ -72,4 +72,3 @@ function default_1(io) {
     return router;
 }
 exports.default = default_1;
-//# sourceMappingURL=channels.js.map

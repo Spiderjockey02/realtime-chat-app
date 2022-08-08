@@ -17,7 +17,8 @@ router
 	})
 	.get('/:id', async (req, res) => {
 		try {
-			await fetchServer({ id: req.params.id });
+			const data = await fetchServer({ id: req.params.id });
+			res.json(data);
 		} catch (err) {
 			console.log(err);
 			res.json({ error: 'An error occured when fetching server' });
@@ -26,6 +27,7 @@ router
 	.patch('/:id', async (req, res) => {
 		try {
 			await updateServer({ id: req.params.id });
+			res.status(200).json({ message: `successfully deleted ${req.params.id}` });
 		} catch (err) {
 			console.log(err);
 			res.json({ error: 'An error occured when updating server' });

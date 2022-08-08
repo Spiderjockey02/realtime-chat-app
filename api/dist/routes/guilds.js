@@ -31,7 +31,8 @@ router
 }))
     .get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, server_1.fetchServer)({ id: req.params.id });
+        const data = yield (0, server_1.fetchServer)({ id: req.params.id });
+        res.json(data);
     }
     catch (err) {
         console.log(err);
@@ -41,6 +42,7 @@ router
     .patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, server_1.updateServer)({ id: req.params.id });
+        res.status(200).json({ message: `successfully deleted ${req.params.id}` });
     }
     catch (err) {
         console.log(err);
@@ -48,4 +50,3 @@ router
     }
 }));
 exports.default = router;
-//# sourceMappingURL=guilds.js.map

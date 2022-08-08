@@ -61,4 +61,3 @@ function createMessage(data) {
     });
 }
 exports.createMessage = createMessage;
-//# sourceMappingURL=message.js.map

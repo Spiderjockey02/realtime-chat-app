@@ -1,7 +1,7 @@
 import express from 'express';
 import { fetchChannel, deleteChannel } from '../database/channel';
 import { fetchMessages, fetchMessage, createMessage } from '../database/message';
-import { Server } from 'socket.io';
+import type { Server } from 'socket.io';
 const	router = express.Router();
 
 export default function(io: Server) {

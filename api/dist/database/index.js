@@ -33,4 +33,3 @@ client.$on('error', (data) => {
     console.log(data.message);
 });
 exports.default = client;
-//# sourceMappingURL=index.js.map

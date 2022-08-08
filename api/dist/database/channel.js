@@ -77,4 +77,3 @@ function getNextPosition(data) {
     });
 }
 exports.getNextPosition = getNextPosition;
-//# sourceMappingURL=channel.js.map

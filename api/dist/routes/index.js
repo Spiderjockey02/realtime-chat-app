@@ -16,4 +16,3 @@ function route(io) {
     return router;
 }
 exports.default = { route };
-//# sourceMappingURL=index.js.map

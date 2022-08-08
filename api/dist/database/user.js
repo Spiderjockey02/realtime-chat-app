@@ -53,4 +53,3 @@ function updateUser(data) {
     });
 }
 exports.updateUser = updateUser;
-//# sourceMappingURL=user.js.map
