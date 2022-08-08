@@ -36,3 +36,4 @@ yarn-error.log*
 */.env
 */utils/logs/roll-????.??.??.log
 */prisma/migrations
+*/dist/*

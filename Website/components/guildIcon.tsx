@@ -2,15 +2,17 @@ import Link from 'next/link';
 
 interface Props {
   guild: {
-    id: string
+    guildId: string
     icon: string
     nameAcronym: string
+    channel: any
   }
 }
 
 function Feed({ guild }: Props) {
+	console.log('guild', guild);
 	return (
-		<Link href={`/channels/${guild.id}/1`}>
+		<Link href={`/channels/${guild.guildId}/${guild.guild.channels.find(c => c.position == 0).id}`}>
 			<a style={{ margin: '0px' }}>
 				<div className="server-icon-bg" data-toggle="tooltip" data-placement="right" title="{guild.name}">
 					{(guild.icon) ?
