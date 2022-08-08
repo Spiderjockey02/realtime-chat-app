@@ -30,9 +30,9 @@ app.use(express.static(__dirname))
 	.use(sessionMiddleware)
 	.use('/api', route.route(io));
 
-	io.on("connection", (s) => {
-		console.log(s)
-	})
+io.on('connection', (s) => {
+	console.log(s);
+});
 
 server.listen(process.env.port, () => {
 	// tslint:disable-next-line:no-console
