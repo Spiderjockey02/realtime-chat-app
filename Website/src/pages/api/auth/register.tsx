@@ -1,5 +1,3 @@
-import client from '../../../database/index';
-import { findUser, createUser } from '../../../database/user';
 import bcrypt from 'bcrypt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -22,11 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.redirect('/register');
 	}
 
-	// Check if user already exists
-	const user = await findUser(client, { email: email });
-	if (user) {
-		return res.redirect('/register');
-	}
 
 	// Encrypt password (Dont save raw password to database)
 	let Hashpassword;
@@ -34,18 +27,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const salt = await bcrypt.genSalt(10);
 		Hashpassword = await bcrypt.hash(password, salt);
 	} catch (err) {
-		// req.flash('error', 'Failed to encrypt password');
 		res.redirect('/register');
 		return console.log(err);
 	}
 
 	// Save the new user to database + make sure to create folder
 	try {
-		await createUser(client, {
-			name : name,
-			email : email,
-			password : Hashpassword,
+		const g = await fetch(`${process.env.APIURL}/api/auth/register`, {
+			method: 'post',
+			headers: {
+				'content-type': 'application/json;charset=UTF-8',
+			},
+			body: JSON.stringify({
+				password: Hashpassword,
+				email: email,
+				username: name,
+				code: '100',
+			}),
 		});
+		console.log(g);
+		console.log(await g.json());
 		console.log(`New user: ${email}`);
 		res.redirect('/');
 	} catch (err) {

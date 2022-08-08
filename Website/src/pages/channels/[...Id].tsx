@@ -9,14 +9,18 @@ import type { GetServerSidePropsContext } from 'next';
 
 interface Props {
 	server: Guild
+	APIURL: string
+	messages: string[]
 }
 
-function HomePage({ server }: Props) {
+function HomePage({ server, APIURL, messages }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 
-	// When rendering client side don't display anything until loading is complete
+
 	if (typeof window !== 'undefined' && loading) return null;
+
+	// When rendering client side don't display anything until loading is complete
 	if (!session) {
 		return (
 			<div>
@@ -28,8 +32,8 @@ function HomePage({ server }: Props) {
 			<div className="container-fluid">
 				<div className="row" style={{ height: '100vh' }}>
 					<ServerSelector />
-					<ChannelSelector guild={server} type="GUILD"/>
-					<TextSection />
+					<ChannelSelector guild={server}/>
+					<TextSection API={APIURL} messages={messages}/>
 					<MemberSection guild={server}/>
 				</div>
 			</div>
@@ -41,11 +45,12 @@ function HomePage({ server }: Props) {
 // This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 	// Fetch data from external API
-	console.log(context);
-	const res = await fetch(`http://192.168.0.14:3000/api/guilds/${context.params?.Id?.[0]}`);
+	const res = await fetch(`${process.env.APIURL}/api/guilds/${context.params?.Id?.[0]}`);
 	const data = await res.json();
 
+	const mesdata = await fetch(`${process.env.APIURL}/api/channels/${context.params?.Id?.[1]}/messages`);
+	const messages = await mesdata.json();
 	// Pass data to the page via props
-	return { props: { server: data } };
+	return { props: { server: data, APIURL: process.env.APIURL, messages } };
 }
 export default HomePage;
