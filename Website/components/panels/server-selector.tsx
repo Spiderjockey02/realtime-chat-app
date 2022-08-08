@@ -3,11 +3,13 @@ import GuildIcon from '../../components/guildIcon';
 import React, { useState } from 'react';
 import ServerPopup from '../../components/server-popup';
 import Link from 'next/link';
+import type { session } from '../../types/datatypes';
 
 function Feed() {
 	const [showModal, setShowModal] = useState(false);
 	const { data: session } = useSession();
-
+	console.log(session);
+	console.log(session.guilds);
 	return (
 		<div className="server-selector">
 			<ServerPopup onClose={() => setShowModal(false)}
@@ -21,7 +23,7 @@ function Feed() {
 					</svg>
 				</Link>
 			</div>
-			{session.servers.map(item => (
+			{session.guilds.map(item => (
 				<GuildIcon guild={item} key={item.id} />
 			))}
 			<div className="server-icon-bg" data-toggle="tooltip" data-placement="right" title="Add a server">

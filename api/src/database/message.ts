@@ -30,9 +30,9 @@ export async function fetchMessage({ id }: fetchMessage) {
 }
 
 type createMessage = {
-		text: string
-		userId: string
-		channelId: string
+	text: string
+	userId: string
+	channelId: string
 }
 
 export async function createMessage(data: createMessage) {

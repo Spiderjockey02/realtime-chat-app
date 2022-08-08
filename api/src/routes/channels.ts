@@ -41,13 +41,14 @@ export default function(io: Server) {
 		.post('/:channelId/messages', async (req, res) => {
 			// Post messages
 			try {
+				console.log(req.body);
 				const { id } = await createMessage({
 					text: req.body.message,
-					userId: '1000',
+					userId: 'cl6jimrn6000058uv5x4kk7p0',
 					channelId: req.params.channelId,
 				});
 				const message = await fetchMessage({ id });
-				io.to(`channel_${req.params.channelId}`).emit('message', message);
+				io.emit('messages', [message]);
 				res.sendStatus(200);
 			} catch (err) {
 				console.log(err);

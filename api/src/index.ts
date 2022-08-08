@@ -9,10 +9,9 @@ import MemoryStore from 'memorystore';
 const mStore = MemoryStore(session);
 import { Server } from 'socket.io';
 import * as dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config({ path: `${process.cwd()}/.env` });
 
-console.log(process.cwd());
-console.log(process.env);
 const io = new Server(server, {
 	cors: {
 		origin: process.env.NEXTAUTH_URL,
@@ -32,12 +31,18 @@ const sessionMiddleware = session({
 	saveUninitialized: false,
 });
 
+
 // The server
 app.use(express.static(__dirname))
 	.use(bodyParser.json())
 	.use(bodyParser.urlencoded({ extended: false }))
 	.use(express.static('./src/public'))
 	.use(compression())
+	.use(cors({
+		origin: process.env.NEXTAUTH_URL,
+		methods: ['GET', 'POST'],
+		credentials: true,
+	}))
 	.use(sessionMiddleware)
 	.use('/api', route.route(io));
 
@@ -49,10 +54,13 @@ io
 	})
 	*/
 	.on('connection', async (socket) => {
+
 		// Show ping for client
 		socket.on('ping', (callback) => {
+			// socket.emit('messages', [{ id: Math.random(), text: 'boo', author: { user: 'ben' } }]);
 			callback();
 		});
+
 		socket.on('hello', ({ roomName }) => {
 			socket.join(roomName);
 		});
@@ -61,6 +69,7 @@ io
 			console.log('User disconnected from WS');
 		});
 	});
+
 server.listen(process.env.port, () => {
 	// tslint:disable-next-line:no-console
 	console.log(`server started at http://localhost:${ process.env.port }`);

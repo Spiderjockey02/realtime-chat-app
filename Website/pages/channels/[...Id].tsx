@@ -6,41 +6,21 @@ import TextSection from '../../components/panels/text-channel';
 import MemberSection from '../../components/panels/member-section';
 import type { Guild } from '../../types/datatypes';
 import type { GetServerSidePropsContext } from 'next';
-import io from 'socket.io-client';
-import { useEffect } from 'react';
 
 interface Props {
 	server: Guild
 	APIURL: string
+	messages: Array<any>
 }
 
-function HomePage({ server, APIURL }: Props) {
+function HomePage({ server, APIURL, messages }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 
-	useEffect(() => {
-		socketInitializer();
-	}, []);
 
-	const socketInitializer = async () => {
-		const socket = io(APIURL, {
-			withCredentials: true,
-			extraHeaders: {
-				'my-custom-header': 'abcd',
-			},
-		});
-
-		setInterval(() => {
-			const start = Date.now();
-			socket.emit('ping', () => {
-				const end = new Date();
-				console.log(`${end.toTimeString().split(' ')[0]} [EVENT]: ping	-	${end - start}ms`);
-			});
-		}, 10000);
-	};
+	if (typeof window !== 'undefined' && loading) return null;
 
 	// When rendering client side don't display anything until loading is complete
-	if (typeof window !== 'undefined' && loading) return null;
 	if (!session) {
 		return (
 			<div>
@@ -53,7 +33,7 @@ function HomePage({ server, APIURL }: Props) {
 				<div className="row" style={{ height: '100vh' }}>
 					<ServerSelector />
 					<ChannelSelector guild={server} type="GUILD"/>
-					<TextSection />
+					<TextSection API={APIURL} messages={messages}/>
 					<MemberSection guild={server}/>
 				</div>
 			</div>
@@ -65,11 +45,12 @@ function HomePage({ server, APIURL }: Props) {
 // This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 	// Fetch data from external API
-	console.log(process.env.APIURL);
 	const res = await fetch(`${process.env.APIURL}/api/guilds/${context.params?.Id?.[0]}`);
 	const data = await res.json();
 
+	const mesdata = await fetch(`${process.env.APIURL}/api/channels/${context.params?.Id?.[1]}/messages`);
+	const messages = await mesdata.json();
 	// Pass data to the page via props
-	return { props: { server: data, APIURL: process.env.APIURL } };
+	return { props: { server: data, APIURL: process.env.APIURL, messages } };
 }
 export default HomePage;

@@ -9,7 +9,7 @@ function Feed({ guild }: Props) {
 
 	return (
 		<div className="member-section">
-			{guild.users.map(i => (
+			{guild.members.map(i => (
 				<p>{i.username}</p>
 			))}
 		</div>

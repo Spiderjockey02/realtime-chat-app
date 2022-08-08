@@ -1,5 +1,6 @@
 import express from 'express';
-import { findUser } from '../database/user';
+import { findUser, updateUser } from '../database/user';
+import { getUserGuilds } from '../database/guildMember';
 const	router = express.Router();
 
 router
@@ -9,8 +10,23 @@ router
 			res.json(user ?? { error: 'Missing user' });
 		} catch (err) {
 			console.log(err);
-			res.json({ error: 'An error occured when fetching server' });
+			res.json({ error: 'An error occured when fetching user' });
 		}
+	})
+	.patch('/@me', async (req, res) => {
+		const { token, username } = req.body;
+		try {
+			const user = await updateUser({ id: token, username });
+			res.json(user);
+		} catch (err) {
+			console.log(err);
+			res.json({ error: 'An error occured when fetching user' });
+		}
+	})
+	.get('/@me/guilds', async (req, res) => {
+		const { token } = req.body;
+		const guilds = await getUserGuilds({ id: token });
+		res.json(guilds);
 	});
 
 
