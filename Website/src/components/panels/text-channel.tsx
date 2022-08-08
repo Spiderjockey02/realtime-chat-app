@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from '../socketio';
-import type { GetServerSidePropsContext } from 'next';
 import MessageCompoent from '../message';
 type Message = {
 	text: string;
@@ -48,7 +47,7 @@ function Feed({ API, messages }: Props) {
 
 	return (
 		<div className="text-channel">
-			<MessageCompoent messages={messages} />
+			<MessageCompoent />
 			<div className="text-input" style={{ whiteSpace: 'nowrap' }}>
 				<svg width="24" height="24" viewBox="0 0 24 24" className="icon-upload">
 					<path
@@ -68,11 +67,6 @@ function Feed({ API, messages }: Props) {
 			</div>
 		</div>
 	);
-}
-
-// This gets called on every request
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-	console.log('hey');
 }
 
 export default Feed;
