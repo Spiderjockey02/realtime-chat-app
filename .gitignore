@@ -3,7 +3,6 @@
 # dependencies
 */node_modules
 /.pnp
-*/dist
 .pnp.js
 # testing
 /coverage
@@ -36,3 +35,4 @@ yarn-error.log*
 */.env
 */utils/logs/roll-????.??.??.log
 */prisma/migrations
+*/dist
