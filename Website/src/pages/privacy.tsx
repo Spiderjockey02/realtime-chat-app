@@ -1,9 +1,6 @@
-import { useState } from 'react';
 import NavBar from '../components/panels/navbar';
 
-export default function error404() {
-	const [hello, setHello] = useState<string[]>([]);
-	setHello((value) => [...value]);
+export default function privacy() {
 	return (
 		<div className="container-fluid">
 			<NavBar />
