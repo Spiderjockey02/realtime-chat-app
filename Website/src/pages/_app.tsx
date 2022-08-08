@@ -1,15 +1,9 @@
 import { SessionProvider } from 'next-auth/react';
-import { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../public/css/main.css';
-import '../public/css/discord.css';
 import { SocketProvider } from '../components/socketio';
+import type { AppProps } from 'next/app';
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-	useEffect(() => {
-		import('bootstrap/dist/js/bootstrap');
-	}, []);
-
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	return (
 		<SessionProvider session={session}>
 			<SocketProvider>
