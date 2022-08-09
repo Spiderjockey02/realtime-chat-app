@@ -40,11 +40,14 @@ export default NextAuth({
 			return {
 				...token,
 				...user,
-				accessToken: account?.id,
-				refreshToken: account?.id,
+				accessToken: user?.id,
+				refreshToken: user?.id,
 			};
 		},
-		session({ token }) {
+		session({ session, user, token }) {
+			console.log('session', session);
+			console.log('user', user);
+			console.log('token', token);
 			return token;
 		},
 	},

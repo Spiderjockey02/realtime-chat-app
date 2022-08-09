@@ -1,11 +1,14 @@
 import React, { createContext } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+const data = await fetch('http://192.168.0.14:3000/api/auth/session');
+const res = await data.json();
+
+
+console.log('res', res);
 const socket = io('http://192.168.0.14:3001', {
 	withCredentials: true,
-	extraHeaders: {
-		'my-custom-header': 'abcd',
-	},
+	query: { token: res.token },
 });
 const SocketContext = createContext<Socket>(socket);
 
@@ -27,3 +30,7 @@ const SocketProvider = ({ children }: any) => {
 	);
 };
 export { SocketContext, SocketProvider };
+
+export function getServerSideProps() {
+	console.log('boo');
+}

@@ -3,6 +3,7 @@ import { findUser, createUser } from '../database/user';
 import { getUserGuilds } from '../database/guildMember';
 import bcrypt from 'bcrypt';
 const	router = express.Router();
+import jwt from 'jsonwebtoken';
 
 router
 	.post('/login', async (req, res) => {
@@ -13,7 +14,7 @@ router
 			const isMatch = await bcrypt.compare(password, user.password);
 			if (isMatch) {
 				const guilds = await getUserGuilds({ id: user.id });
-				res.json({ success: 'User successfully logged in', code, user: Object.assign(user, { guilds: guilds }) });
+				res.json({ success: 'User successfully logged in', code, user: Object.assign(user, { guilds: guilds }, { token: jwt.sign(user, process.env.JWT_SECRET as string, { expiresIn: '1800s' }) }) });
 			} else {
 				res.json({ error: 'Incorrect password' });
 			}

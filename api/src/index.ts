@@ -11,12 +11,13 @@ import { Server } from 'socket.io';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 dotenv.config({ path: `${process.cwd()}/.env` });
+import jwt from 'jsonwebtoken';
 
 const io = new Server(server, {
 	cors: {
 		origin: process.env.NEXTAUTH_URL,
 		methods: ['GET', 'POST'],
-		allowedHeaders: ['my-custom-header'],
+		allowedHeaders: ['authorization'],
 		credentials: true,
 	},
 });
@@ -54,9 +55,18 @@ io
 	})
 	*/
 	.on('connection', async (socket) => {
-
+		const userToken = socket.handshake.query.token;
+		console.log(userToken);
+		try {
+			const decoded = jwt.verify(userToken as string, 'JHLSDHLFSFDSDIUBFSL UBLSIUF RI7B34L7I46B7IBLI7BBG7OIWBV74IV7BI64VB74647B3VB7346VB4376V4B7W6');
+			console.log('de', decoded);
+		} catch(err) {
+			console.log('Someone tried to connect without logging in');
+			socket.disconnect();
+		}
 		// Show ping for client
 		socket.on('ping', (callback) => {
+			console.log('send ping');
 			// socket.emit('messages', [{ id: Math.random(), text: 'boo', author: { user: 'ben' } }]);
 			callback();
 		});
