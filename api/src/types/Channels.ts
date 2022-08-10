@@ -20,17 +20,17 @@ export type Channel = {
   owner_id?: string
   parentId?: string
   children: Channel[]
-  permission_overwrites: PermissionOverWrite[]
+  permission_overwrites: PermissionOverwrite[]
 }
 
-export enum PermissionOverWritesTypes {
+export enum PermissionOverwritesTypes {
    ROLE,
    MEMBER
 }
 
-export type PermissionOverWrite = {
+export type PermissionOverwrite = {
   id: string
-  type: PermissionOverWritesTypes
+  type: PermissionOverwritesTypes
   allow: number
   disallow: number
 }
