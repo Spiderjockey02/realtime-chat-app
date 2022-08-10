@@ -3,7 +3,7 @@ import type { User } from './Users';
 export enum ChannelTypes {
    GUILD_TEXT,
    GROUP_DM,
-   VOICE,
+   GUILD_VOICE,
    CATEGORY,
    DM,
 }
