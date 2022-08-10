@@ -1,16 +1,16 @@
 import type { User } from './Users';
 
-export enum channelTypeEnum {
-  'GUILD_TEXT',
-  'DM',
-  'GROUP_DM',
-  'VOICE',
-  'CATEGORY'
+export enum ChannelTypes {
+   GUILD_TEXT,
+   GROUP_DM,
+   VOICE,
+   CATEGORY,
+   DM,
 }
 
 export type Channel = {
   id: string
-  type: channelTypeEnum
+  type: ChannelTypes,
   name: string
   topic?: string
   nsfw: boolean
@@ -20,17 +20,17 @@ export type Channel = {
   owner_id?: string
   parentId?: string
   children: Channel[]
-  permission_overwrites: PermOverwrites[]
+  permission_overwrites: PermissionOverWrite[]
 }
 
-export enum OverwriteType {
-  'role',
-  'member'
+export enum PermissionOverWritesTypes {
+   ROLE,
+   MEMBER
 }
 
-export type PermOverwrites = {
+export type PermissionOverWrite = {
   id: string
-  type: OverwriteType
+  type: PermissionOverWritesTypes
   allow: number
   disallow: number
 }
