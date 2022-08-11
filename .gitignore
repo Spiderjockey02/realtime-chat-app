@@ -37,3 +37,4 @@ yarn-error.log*
 */utils/logs/roll-????.??.??.log
 */prisma/migrations
 */dist/
+*/tsconfig.tsbuildInfo
