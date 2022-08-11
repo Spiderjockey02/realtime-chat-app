@@ -23,6 +23,10 @@ const io = new Server(server, {
 });
 import route from './routes';
 
+import { Snowflake } from './utils/Snowflake';
+const id = new Snowflake({}).generate;
+console.log('new ID: ' + id);
+
 
 // Session handler
 const sessionMiddleware = session({
@@ -61,6 +65,7 @@ io
 			const decoded = jwt.verify(userToken as string, 'JHLSDHLFSFDSDIUBFSL UBLSIUF RI7B34L7I46B7IBLI7BBG7OIWBV74IV7BI64VB74647B3VB7346VB4376V4B7W6');
 			console.log('de', decoded);
 		} catch(err) {
+			console.log(err);
 			console.log('Someone tried to connect without logging in');
 			socket.disconnect();
 		}
