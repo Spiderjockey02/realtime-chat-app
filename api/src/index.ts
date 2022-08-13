@@ -12,6 +12,8 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 dotenv.config({ path: `${process.cwd()}/.env` });
 import jwt from 'jsonwebtoken';
+import { logger } from './utils/Logger';
+
 
 const io = new Server(server, {
 	cors: {
@@ -22,12 +24,6 @@ const io = new Server(server, {
 	},
 });
 import route from './routes';
-
-import { Snowflake } from './utils/Snowflake';
-const id = new Snowflake().generate();
-console.log('new ID: ' + id);
-console.log(new Snowflake().destructure(id));
-
 
 // Session handler
 const sessionMiddleware = session({
@@ -70,15 +66,10 @@ io
 			console.log('Someone tried to connect without logging in');
 			socket.disconnect();
 		}
+
 		// Show ping for client
 		socket.on('ping', (callback) => {
-			console.log('send ping');
-			// socket.emit('messages', [{ id: Math.random(), text: 'boo', author: { user: 'ben' } }]);
 			callback();
-		});
-
-		socket.on('hello', ({ roomName }) => {
-			socket.join(roomName);
 		});
 
 		socket.on('disconnect', function() {
@@ -87,6 +78,5 @@ io
 	});
 
 server.listen(process.env.port, () => {
-	// tslint:disable-next-line:no-console
-	console.log(`server started at http://localhost:${ process.env.port }`);
+	logger(`server started at http://localhost:${process.env.port}`, 'ready');
 });

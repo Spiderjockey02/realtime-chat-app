@@ -34,7 +34,7 @@ yarn-error.log*
 */src/uploads/*
 */!src/uploads/README.md
 */.env
-*/utils/logs/roll-????.??.??.log
+*/src/utils/logs/roll-????.??.??.log
 */prisma/migrations
 */dist/
 */tsconfig.tsbuildInfo
