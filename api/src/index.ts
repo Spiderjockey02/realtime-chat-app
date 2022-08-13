@@ -24,8 +24,9 @@ const io = new Server(server, {
 import route from './routes';
 
 import { Snowflake } from './utils/Snowflake';
-const id = new Snowflake({}).generate;
+const id = new Snowflake().generate();
 console.log('new ID: ' + id);
+console.log(new Snowflake().destructure(id));
 
 
 // Session handler

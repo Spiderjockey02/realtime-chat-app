@@ -3,6 +3,6 @@
   "compilerOptions": {
     "rootDir": "./src",
     "types": ["node"],
-    "outDir": "./dist",  
+    "outDir": "./dist",
   },
 }
