@@ -1,5 +1,6 @@
 import client from './index';
 import { createChannel, getNextPosition } from './channel';
+import Snowflake from '../utils/Snowflake';
 
 type createServer = {
 	name: string
@@ -9,6 +10,7 @@ type createServer = {
 export async function createServer(data: createServer) {
 	const server = await client.guild.create({
 		data: {
+			id: String(Snowflake.generate()),
 			name: data.name,
 			owner: {
 				connect: {

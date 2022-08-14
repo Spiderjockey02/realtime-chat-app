@@ -1,3 +1,7 @@
 .home_page {
   background-color: #404eed;
 }
+
+select option[disabled]:first-child {
+	display: none;
+}

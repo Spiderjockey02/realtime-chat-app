@@ -1,4 +1,5 @@
 import client from './index';
+import Snowflake from '../utils/Snowflake';
 
 type createUser = {
 	email: string
@@ -10,6 +11,7 @@ type createUser = {
 export function createUser(data: createUser) {
 	return client.user.create({
 		data: {
+			id: String(Snowflake.generate()),
 			email: data.email,
 			username: data.username,
 			password: data.password,

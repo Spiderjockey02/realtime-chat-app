@@ -1,4 +1,5 @@
 import client from './index';
+import Snowflake from '../utils/Snowflake';
 
 type deleteChannel = {
 	id: string
@@ -47,6 +48,7 @@ type createChannel = {
 export async function createChannel(data: createChannel) {
 	return client.channel.create({
 		data: {
+			id: String(Snowflake.generate()),
 			name: data.name,
 			type: data.type ?? 'TEXT',
 			topic: data.topic ?? '',

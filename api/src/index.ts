@@ -34,7 +34,7 @@ const sessionMiddleware = session({
 });
 
 
-// The server
+// The API server
 app.use(express.static(__dirname))
 	.use(bodyParser.json())
 	.use(bodyParser.urlencoded({ extended: false }))
@@ -48,13 +48,8 @@ app.use(express.static(__dirname))
 	.use(sessionMiddleware)
 	.use('/api', route.route(io));
 
+// The WS server
 io
-	/*
-	.use((socket, next) => {
-		// Wrap the express middleware
-		// sessionMiddleware(socket.request, {}, next);
-	})
-	*/
 	.on('connection', async (socket) => {
 		const userToken = socket.handshake.query.token;
 		console.log(userToken);
@@ -77,6 +72,7 @@ io
 		});
 	});
 
+// Puts server online
 server.listen(process.env.port, () => {
 	logger(`server started at http://localhost:${process.env.port}`, 'ready');
 });

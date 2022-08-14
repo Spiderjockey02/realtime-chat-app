@@ -6,7 +6,7 @@ export type SnowflakeInput = {
 	processId?: number
 }
 
-export class Snowflake {
+export default new class Snowflake {
 	workerId: number;
 	processId: number;
 	increment:number;
@@ -46,4 +46,4 @@ export class Snowflake {
 			processId: this.processId,
 		};
 	}
-}
+};

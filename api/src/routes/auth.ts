@@ -34,6 +34,17 @@ router
 			console.log(err);
 			res.json({ error: 'An error occured when fetching server' });
 		}
+	})
+	.post('/check', async (req, res) => {
+		const { email } = req.body;
+
+		try {
+			const user = await findUser({ email });
+			res.json({ found: (user) ? true : false });
+		} catch (err: any) {
+			console.log(err);
+			res.json({ error: err.message });
+		}
 	});
 
 
