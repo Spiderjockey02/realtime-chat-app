@@ -21,6 +21,7 @@ export default function(io: Server) {
 			try {
 				const channel = await deleteChannel({ id: req.params.channelId });
 				res.json(channel ?? { error: 'Incorrect channel Id' });
+				io.emit('CHANNEL_DELETE', { channel });
 			} catch (err) {
 				console.log(err);
 				res.json({ error: 'An error occured fetching channel' });

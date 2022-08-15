@@ -13,7 +13,7 @@ import cors from 'cors';
 dotenv.config({ path: `${process.cwd()}/.env` });
 import jwt from 'jsonwebtoken';
 import { logger } from './utils/Logger';
-
+import fs from 'fs';
 
 const io = new Server(server, {
 	cors: {
@@ -23,7 +23,7 @@ const io = new Server(server, {
 		credentials: true,
 	},
 });
-import route from './routes';
+// import route from './routes';
 
 // Session handler
 const sessionMiddleware = session({
@@ -33,46 +33,67 @@ const sessionMiddleware = session({
 	saveUninitialized: false,
 });
 
-
-// The API server
-app.use(express.static(__dirname))
-	.use(bodyParser.json())
-	.use(bodyParser.urlencoded({ extended: false }))
-	.use(express.static('./src/public'))
-	.use(compression())
-	.use(cors({
-		origin: process.env.NEXTAUTH_URL,
-		methods: ['GET', 'POST'],
-		credentials: true,
-	}))
-	.use(sessionMiddleware)
-	.use('/api', route.route(io));
-
-// The WS server
-io
-	.on('connection', async (socket) => {
-		const userToken = socket.handshake.query.token;
-		console.log(userToken);
-		try {
-			const decoded = jwt.verify(userToken as string, 'JHLSDHLFSFDSDIUBFSL UBLSIUF RI7B34L7I46B7IBLI7BBG7OIWBV74IV7BI64VB74647B3VB7346VB4376V4B7W6');
-			console.log('de', decoded);
-		} catch(err) {
-			console.log(err);
-			console.log('Someone tried to connect without logging in');
-			socket.disconnect();
+function createSearchList(path: string, files: Array<string>): Array<string> {
+	let foundItems = []
+	for (const child of files) {
+		if (fs.statSync(`${path}/${child}`).isDirectory()) {
+			foundItems.push(...createSearchList(`${path}/${child}`,  fs.readdirSync(`${path}/${child}`)));
+		} else {
+			foundItems.push(`${path}/${child}`)
 		}
+	}
 
-		// Show ping for client
-		socket.on('ping', (callback) => {
-			callback();
+	return foundItems;
+}
+
+
+(async () => {
+	// The API server
+	app.use(express.static(__dirname))
+		.use(bodyParser.json())
+		.use(bodyParser.urlencoded({ extended: false }))
+		.use(express.static('./src/public'))
+		.use(compression())
+		.use(cors({
+			origin: process.env.NEXTAUTH_URL,
+			methods: ['GET', 'POST'],
+			credentials: true,
+		}))
+		.use(sessionMiddleware);
+	// Get all routes
+	const endpoints = createSearchList('./src/routes', fs.readdirSync('./src/routes'))
+
+	for (const endpoint of endpoints) {
+		app.use(`${endpoint.replace('./src/routes', '/api').replace('.ts', '')}`, (await import(endpoint.replace('./src', '.').replace('.ts', ''))).default(io))
+	}
+
+	// The WS server
+	io
+		.on('connection', async (socket) => {
+			const userToken = socket.handshake.query.token;
+			console.log(userToken);
+			try {
+				const decoded = jwt.verify(userToken as string, 'JHLSDHLFSFDSDIUBFSL UBLSIUF RI7B34L7I46B7IBLI7BBG7OIWBV74IV7BI64VB74647B3VB7346VB4376V4B7W6');
+				console.log('de', decoded);
+			} catch(err) {
+				console.log(err);
+				console.log('Someone tried to connect without logging in');
+				socket.disconnect();
+			}
+
+			// Show ping for client
+			socket.on('ping', (callback) => {
+				callback();
+			});
+
+			socket.on('disconnect', function() {
+				console.log('User disconnected from WS');
+			});
 		});
 
-		socket.on('disconnect', function() {
-			console.log('User disconnected from WS');
-		});
+	// Puts server online
+	server.listen(process.env.port, () => {
+		logger(`server started at http://localhost:${process.env.port}`, 'ready');
 	});
 
-// Puts server online
-server.listen(process.env.port, () => {
-	logger(`server started at http://localhost:${process.env.port}`, 'ready');
-});
+})()
