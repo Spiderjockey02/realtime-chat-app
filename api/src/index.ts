@@ -13,7 +13,8 @@ import cors from 'cors';
 dotenv.config({ path: `${process.cwd()}/.env` });
 import jwt from 'jsonwebtoken';
 import { logger } from './utils/Logger';
-import fs from 'fs';
+import { Utils } from './utils/Utils';
+import { join } from 'path';
 
 const io = new Server(server, {
 	cors: {
@@ -23,7 +24,6 @@ const io = new Server(server, {
 		credentials: true,
 	},
 });
-// import route from './routes';
 
 // Session handler
 const sessionMiddleware = session({
@@ -32,20 +32,6 @@ const sessionMiddleware = session({
 	resave: false,
 	saveUninitialized: false,
 });
-
-function createSearchList(path: string, files: Array<string>): Array<string> {
-	let foundItems = []
-	for (const child of files) {
-		if (fs.statSync(`${path}/${child}`).isDirectory()) {
-			foundItems.push(...createSearchList(`${path}/${child}`,  fs.readdirSync(`${path}/${child}`)));
-		} else {
-			foundItems.push(`${path}/${child}`)
-		}
-	}
-
-	return foundItems;
-}
-
 
 (async () => {
 	// The API server
@@ -61,10 +47,11 @@ function createSearchList(path: string, files: Array<string>): Array<string> {
 		}))
 		.use(sessionMiddleware);
 	// Get all routes
-	const endpoints = createSearchList('./src/routes', fs.readdirSync('./src/routes'))
+	const endpoints = Utils.makeRoutes(join(__dirname, './', 'routes'), 'api');
 
 	for (const endpoint of endpoints) {
-		app.use(`${endpoint.replace('./src/routes', '/api').replace('.ts', '')}`, (await import(endpoint.replace('./src', '.').replace('.ts', ''))).default(io))
+		logger(`Loading: ${endpoint.route} endpoint.`, 'log');
+		app.use(endpoint.route, (await import(endpoint.path)).default(io));
 	}
 
 	// The WS server
@@ -96,4 +83,4 @@ function createSearchList(path: string, files: Array<string>): Array<string> {
 		logger(`server started at http://localhost:${process.env.port}`, 'ready');
 	});
 
-})()
+})();
