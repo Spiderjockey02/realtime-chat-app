@@ -1,112 +1,115 @@
 import { useState } from 'react';
-import { signIn, getCsrfToken } from 'next-auth/react';
-import { Formik, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import type { BaseSyntheticEvent } from 'react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import type { SignInResponse } from 'next-auth/react';
 
-export default function SignIn({ csrfToken }) {
-  const router = useRouter();
-  const [error, setError] = useState(null);
+type resCode = 'Signin' | 'OAuthSignin' | 'OAuthCallback' |'OAuthCreateAccount' |'EmailCreateAccount' |'Callback' |'OAuthAccountNotLinked' |'EmailSignin' |'CredentialsSignin' |'default'
 
-  return (
-      <Formik
-        initialValues={{ email: '', password: '' }}
-        validationSchema={Yup.object({
-          email: Yup.string()
-            .max(30, 'Must be 30 characters or less')
-            .email('Invalid email address')
-            .required('Please enter your email'),
-          password: Yup.string().required('Please enter your password'),
-        })}
-        onSubmit={async (values, { setSubmitting }) => {
-          const res = await signIn('credentials', {
-            redirect: false,
-            email: values.email,
-            password: values.password,
-            callbackUrl: `${window.location.origin}`,
-          });
-          console.log(res)
-          if (res?.error) {
-            setError(res.error);
-          } else {
-            setError(null);
-          }
-          if (res.url) router.push(res.url);
-          setSubmitting(false);
-        }}
-      >
-        {(formik) => (
-          <form onSubmit={formik.handleSubmit}>
-            <div className="bg-red-400 flex flex-col items-center justify-center min-h-screen py-2 shadow-lg">
-              <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
+const errorsCodes = {
+	'Signin': 'Try signing with a different account.',
+	'OAuthSignin': 'Try signing with a different account.',
+	'OAuthCallback': 'Try signing with a different account.',
+	'OAuthCreateAccount': 'Try signing with a different account.',
+	'EmailCreateAccount': 'Try signing with a different account.',
+	'Callback': 'Try signing with a different account.',
+	'OAuthAccountNotLinked':
+    'To confirm your identity, sign in with the same account you used originally.',
+	'EmailSignin': 'Check your email address.',
+	'CredentialsSignin':
+    'Sign in failed. Check the details you provided are correct.',
+	'default': 'Unable to sign in.',
+};
 
-                <div className="text-red-400 text-md text-center rounded p-2">
-                  {error}
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="uppercase text-sm text-gray-600 font-bold"
-                  >
-                    Email
-                    <Field
-                      name="email"
-                      aria-label="enter your email"
-                      aria-required="true"
-                      type="text"
-                      className="w-full bg-gray-300 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
-                    />
-                  </label>
-
-                  <div className="text-red-600 text-sm">
-                    <ErrorMessage name="email" />
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="password"
-                    className="uppercase text-sm text-gray-600 font-bold"
-                  >
-                    password
-                    <Field
-                      name="password"
-                      aria-label="enter your password"
-                      aria-required="true"
-                      type="password"
-                      className="w-full bg-gray-300 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
-                    />
-                  </label>
-
-                  <div className="text-red-600 text-sm">
-                    <ErrorMessage name="password" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-center">
-                  <button
-                    type="submit"
-                    className="uppercase text-sm font-bold tracking-wide bg-green-400 text-gray-100 p-3 rounded-lg w-full focus:outline-none focus:shadow-outline hover:shadow-xl active:scale-90 transition duration-150"
-                  >
-                    {formik.isSubmitting ? 'Please wait...' : 'Sign In'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        )}
-      </Formik>
-  );
+type ErrorTypes = {
+ type: | 'email' | 'password'
+ error: string
 }
 
-// This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      csrfToken: await getCsrfToken(context),
-    },
-  };
+export default function SignIn() {
+	const [errors, setErrors] = useState<ErrorTypes[]>([]);
+	const [disabled, setDisabled] = useState(false);
+	const router = useRouter();
+
+	const handleSubmit = async (event: BaseSyntheticEvent) => {
+		const err = [] as ErrorTypes[];
+		event.preventDefault();
+		const email = (document.getElementById('email') as HTMLInputElement).value;
+		const password = (document.getElementById('password') as HTMLInputElement).value;
+
+		// Make sure both fields are filled in
+		if (email.length == 0) err.push({ type: 'email', error: 'This field is missing' });
+		if (password.length == 0) err.push({ type: 'password', error: 'This field is missing' });
+
+		// Show errors if there are any
+		if (err.length !== 0) return setErrors(err);
+
+		// Try and sign in the user
+		const res = await signIn('credentials', {
+			redirect: false,
+			email: email,
+			password: password,
+			callbackUrl: `${window.location.origin}`,
+		}) as SignInResponse;
+
+		// Show errors if any
+		if (res.error) return setErrors([{ type: 'email', error: errorsCodes[res.error as resCode] }]);
+
+		// Move to the callback URL so user knows they are logged in
+		router.push(res.url as string);
+	};
+
+	const checkInput = async (event: BaseSyntheticEvent) => {
+		const input = event.target.value;
+		setDisabled(input.length >= 1);
+	};
+
+	return (
+		<section className="vh-100" style={{ 'backgroundColor': '#eee' }}>
+			<div className="container h-100">
+				<div className="row d-flex justify-content-center align-items-center h-100">
+					<div className="col-lg-8 col-xl-7">
+						<div className="card text-black" style={{ 'borderRadius': '25px' }}>
+							<div className="card-body p-md-5">
+								<div className="row justify-content-center">
+									<div className="col-md-12 col-lg-9 col-xl-8 order-2 order-lg-1">
+										<p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Login up</p>
+										<form className="mx-1 mx-md-4" onSubmit={handleSubmit}>
+											<div className="d-flex flex-row align-items-center mb-4">
+												<i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+												<div className="form-outline flex-fill mb-0">
+													{errors.find(i => i.type == 'email') ?
+														<label className="form-label text-danger" htmlFor="email">Email - {errors.find(i => i.type == 'email')?.error}</label>
+														: <label className="form-label" htmlFor="email">Email</label>
+													}
+													<input type="text" id="email" className="form-control" name="email" onChange={checkInput}/>
+												</div>
+											</div>
+
+											<div className="d-flex flex-row align-items-center mb-4">
+												<i className="fas fa-envelope fa-lg me-3 fa-fw"></i>
+												<div className="form-outline flex-fill mb-0">
+													{errors.find(i => i.type == 'password') ?
+														<label className="form-label text-danger" htmlFor="password">Password - {errors.find(i => i.type == 'password')?.error}</label>
+														: <label className="form-label" htmlFor="password">Password</label>
+													}
+													<input type="password" id="password" className="form-control" name="password" />
+													<a href={disabled ? '/forgot-password' : 'javascript:void(0)'} className={disabled ? '' : 'disable-tag'}>Forgot your password?</a>
+												</div>
+											</div>
+
+											<div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+												<button type="submit" className="btn btn-primary btn-lg">Login</button>
+											</div>
+											<p>Need an account? <a href="/register">Register</a></p>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	);
 }

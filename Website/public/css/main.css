@@ -1,7 +1,10 @@
 .home_page {
   background-color: #404eed;
 }
-
+.disable-tag {
+  pointer-events: none;
+  text-decoration: none;
+}
 select option[disabled]:first-child {
 	display: none;
 }

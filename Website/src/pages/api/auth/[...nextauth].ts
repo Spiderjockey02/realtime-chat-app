@@ -13,7 +13,7 @@ export default NextAuth({
 			},
 			async authorize(credentials) {
 				if (!credentials?.email || !credentials?.password) return null;
-				const res = await fetch(`${process.env.APIURL}/api/auth/login`, {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_APIURL}/api/auth/login`, {
 					method: 'post',
 					headers: {
 						'content-type': 'application/json;charset=UTF-8',
@@ -45,9 +45,6 @@ export default NextAuth({
 			};
 		},
 		session({ session, user, token }) {
-			console.log('session', session);
-			console.log('user', user);
-			console.log('token', token);
 			return token;
 		},
 	},
