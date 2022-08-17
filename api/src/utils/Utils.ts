@@ -9,7 +9,7 @@ export class Utils {
 			const basePath = directory.split(sep).pop() as string;
 			const dirIndex = dir.indexOf(basePath);
 			const routePath = dir.slice(dirIndex).split(sep).join(seperator).toString().replace(basePath, prefix.startsWith(seperator) ? prefix : `${seperator}${prefix}`);
-			if(routePath.includes('[') && routePath.includes(']')) results.push({path, route: `${routePath.replace('[', ':').replace(']', '')}/${seperator}${name}` });
+			if(routePath.includes('[') && routePath.includes(']')) results.push({ path, route: `${routePath.replace('[', ':').replace(']', '')}${seperator}${name}` });
 			else results.push({ path, route: `${routePath}${seperator}${name}` });
 		}
 		return results;
