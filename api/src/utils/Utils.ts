@@ -2,14 +2,15 @@ import { readdirSync, statSync } from 'fs';
 import { join, parse, sep } from 'path';
 
 export class Utils {
-	public static makeRoutes(directory: string, prefix: string, seperator = '/') {
+	public static generateRoutes(directory: string, prefix: string, seperator = '/') {
 		const results: FileOptions[] = [];
-		for(const file of this.searchDirectory(directory)) {
+		for(const path of this.searchDirectory(directory)) {
 			const { dir, name } = parse(file);
 			const basePath = directory.split(sep).pop() as string;
 			const dirIndex = dir.indexOf(basePath);
 			const routePath = dir.slice(dirIndex).split(sep).join(seperator).toString().replace(basePath, prefix.startsWith(seperator) ? prefix : `${seperator}${prefix}`);
-			results.push({ path: file, route: `${routePath}${seperator}${name}` });
+			if(routePath.includes('[') && routePath.includes(']')) results.push({path, route: `${routePath.replace('[', ':').replace(']', '')}/${seperator}${name}` });
+			else results.push({ path, route: `${routePath}${seperator}${name}` });
 		}
 		return results;
 	}
