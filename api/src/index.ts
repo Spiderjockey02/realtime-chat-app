@@ -47,7 +47,7 @@ const sessionMiddleware = session({
 		}))
 		.use(sessionMiddleware);
 	// Get all routes
-	const endpoints = Utils.makeRoutes(join(__dirname, './', 'routes'), 'api');
+	const endpoints = Utils.generateRoutes(join(__dirname, './', 'routes'), 'api');
 
 	for (const endpoint of endpoints) {
 		logger(`Loading: ${endpoint.route} endpoint.`, 'log');
