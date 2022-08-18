@@ -8,18 +8,15 @@ export class Utils {
 			const { dir, name } = parse(path);
 			const basePath = directory.split(sep).pop() as string;
 			const directoryRoute = dir.substring(dir.indexOf(basePath)).replace(basePath, prefix.startsWith('/') ? prefix : `/${prefix}`);
-			const { result: dynamicDirRoute } = this.validateDynamicRoute(directoryRoute);
-			const { result: dynamicFileRoute } = this.validateDynamicRoute(name, true);
-			results.push({ path, route: `${dynamicDirRoute}${dynamicFileRoute}` });
-
+			results.push({ path, route: `${this.validateDynamicRoute(directoryRoute)}${this.validateDynamicRoute(name, true)}` });
 		}
 		return results;
 	}
 	private static validateDynamicRoute(context: string, isFile = false, seperator = '/') {
 		const dynamicRouteValidator = /(?<=\[).+?(?=\])/gi;
 		const validate = (dynamicRouteValidator.exec(context));
-		if(!validate) return { result: isFile ? `${seperator}${context}` : context };
-		return { result: context.replace(`[${validate[0]}]`, isFile ? `${seperator}:${validate[0]}` : `:${validate[0]}`) };
+		if(!validate) return isFile ? `${seperator}${context}` : context;
+		return context.replace(`[${validate[0]}]`, isFile ? `${seperator}:${validate[0]}` : `:${validate[0]}`);
 	}
 
 	public static searchDirectory(directory: string, files: string[] = []) {
