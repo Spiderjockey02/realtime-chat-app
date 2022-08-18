@@ -2,17 +2,18 @@ import { readdirSync, statSync } from 'fs';
 import { join, parse, sep } from 'path';
 
 export class Utils {
-	public static generateRoutes(directory: string, prefix: string) {
+	public static generateRoutes(directory: string, prefix: string, seperator = '/') {
 		const results: FileOptions[] = [];
 		for(const path of this.searchDirectory(directory)) {
 			const { dir, name } = parse(path);
 			const basePath = directory.split(sep).pop() as string;
-			const directoryRoute = dir.substring(dir.indexOf(basePath)).replace(basePath, prefix.startsWith('/') ? prefix : `/${prefix}`);
-			results.push({ path, route: `${this.validateDynamicRoute(directoryRoute)}${this.validateDynamicRoute(name, true)}` });
+			const dirIndex = dir.indexOf(basePath);
+			const directoryRoute = dir.slice(dirIndex).split(sep).join(seperator).toString().replace(basePath, prefix.startsWith(seperator) ? prefix : `${seperator}${prefix}`);
+			results.push({ path, route: `${this.validateDynamicRoute(directoryRoute, seperator)}${this.validateDynamicRoute(name, seperator, true)}` });
 		}
 		return results;
 	}
-	private static validateDynamicRoute(context: string, isFile = false, seperator = '/') {
+	private static validateDynamicRoute(context: string, seperator = '/', isFile = false) {
 		const dynamicRouteValidator = /(?<=\[).+?(?=\])/gi;
 		const validate = (dynamicRouteValidator.exec(context));
 		if(!validate) return isFile ? `${seperator}${context}` : context;
