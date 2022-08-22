@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from './socketio';
 
 interface Props {
-  msg: Array<any>
+  messages: Post[]
 }
 
 type Post = {
@@ -13,8 +13,8 @@ type Post = {
   }
 }
 
-function message({ msg: messages }: Props) {
-	const [posts, setPosts] = useState<Post[]>([]);
+function message({ messages }: Props) {
+	const [posts, setPosts] = useState<Post[]>(messages);
 	const socket = useContext(SocketContext);
 
 	useEffect(() => {
@@ -24,8 +24,8 @@ function message({ msg: messages }: Props) {
 	}, [posts, setPosts]);
 
 	return (
-		<DiscordMessages className={{ 'height': '85vh' }}>
-			<div id="messages">
+		<DiscordMessages>
+			<div style={{ 'height': '85vh', 'overflow':'scroll', 'display': 'flex', 'flexDirection': 'column-reverse' }}>
 				{posts.filter(p => p.text).map((msg, index) => (
 					<DiscordMessage author={msg.author.username} avatar="red" key={index}>
 						{msg.text} <DiscordMention> Boo </DiscordMention>

@@ -1,5 +1,6 @@
 import client from './index';
 import { createChannel, getNextPosition } from './channel';
+import { createGuildMember } from './guildMember';
 import Snowflake from '../utils/Snowflake';
 
 type createServer = {
@@ -29,6 +30,7 @@ export async function createServer(data: createServer) {
 		position: await getNextPosition({ serverId: server.id }) });
 	await createChannel({ name: 'General', type: 'VOICE', serverId: server.id,
 		position: await getNextPosition({ serverId: server.id }) });
+	await createGuildMember({ userId: data.userId, guildId: server.id });
 }
 
 type fetchServers = {

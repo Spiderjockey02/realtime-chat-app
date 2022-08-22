@@ -6,14 +6,14 @@ import TextSection from '../../components/panels/text-channel';
 import MemberSection from '../../components/panels/member-section';
 import type { Guild } from '../../types/datatypes';
 import type { GetServerSidePropsContext } from 'next';
+import { SocketProvider } from '../../components/socketio';
 
 interface Props {
 	server: Guild
-	APIURL: string
 	messages: Array<any>
 }
 
-function HomePage({ server, APIURL, messages }: Props) {
+function HomePage({ server, messages }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 
@@ -29,14 +29,16 @@ function HomePage({ server, APIURL, messages }: Props) {
 		);
 	} else {
 		return (
-			<div className="container-fluid">
-				<div className="row" style={{ height: '100vh' }}>
-					<ServerSelector />
-					<ChannelSelector guild={server} type="GUILD"/>
-					<TextSection API={APIURL} messages={messages}/>
-					<MemberSection guild={server}/>
+			<SocketProvider>
+				<div className="container-fluid custom-scrollbar">
+					<div className="row" style={{ height: '100vh' }}>
+						<ServerSelector />
+						<ChannelSelector guild={server} />
+						<TextSection messages={messages}/>
+						<MemberSection guild={server}/>
+					</div>
 				</div>
-			</div>
+			</SocketProvider>
 		);
 
 	}
@@ -45,12 +47,12 @@ function HomePage({ server, APIURL, messages }: Props) {
 // This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
 	// Fetch data from external API
-	const res = await fetch(`${process.env.APIURL}/api/guilds/${context.params?.Id?.[0]}`);
+	const res = await fetch(`${process.env.NEXT_PUBLIC_APIURL}/api/guilds/${context.params?.Id?.[0]}`);
 	const data = await res.json();
 
-	const mesdata = await fetch(`${process.env.APIURL}/api/channels/${context.params?.Id?.[1]}/messages`);
+	const mesdata = await fetch(`${process.env.NEXT_PUBLIC_APIURL}/api/channels/${context.params?.Id?.[1]}/messages`);
 	const messages = await mesdata.json();
 	// Pass data to the page via props
-	return { props: { server: data, APIURL: process.env.APIURL, messages } };
+	return { props: { server: data, messages } };
 }
 export default HomePage;

@@ -1,4 +1,5 @@
 import client from './index';
+import Snowflake from '../utils/Snowflake';
 
 type findUser = {
 	id: string
@@ -18,5 +19,22 @@ export function	getUserGuilds(data: findUser) {
 			},
 		},
 	});
+}
 
+type createMember = {
+	userId: string
+	guildId: string
+}
+export function createGuildMember({ userId, guildId }: createMember) {
+	return client.guildMember.create({
+		data: {
+			id: String(Snowflake.generate()),
+			userId: userId,
+			guild: {
+				connect: {
+					id: guildId,
+				},
+			},
+		},
+	});
 }

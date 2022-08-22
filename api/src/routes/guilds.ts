@@ -10,7 +10,7 @@ export default function(_: Server) {
 			try {
 				await createServer({
 					name: req.body.server_name,
-					userId: '1000',
+					userId: req.body.userId,
 				});
 				res.redirect('/app');
 			} catch (err) {
@@ -34,6 +34,6 @@ export default function(_: Server) {
 				console.log(err);
 				res.json({ error: 'An error occured when updating server' });
 			}
-		})
-		return router
+		});
+	return router;
 }

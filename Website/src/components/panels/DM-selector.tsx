@@ -1,8 +1,7 @@
 function Feed() {
 	return (
-		<div className="channel-selector">
-			<p>Friends</p>
-		</div>
+		<nav className="col" style={{ 'maxWidth': '256px', 'maxHeight': '100vh' }}>
+		</nav>
 	);
 
 }

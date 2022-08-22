@@ -15,7 +15,9 @@ export default function(_: Server) {
 				if (!user) return res.json({ error: 'Missing user' });
 				const isMatch = await bcrypt.compare(password, user.password);
 				if (isMatch) {
+					console.log(user);
 					const guilds = await getUserGuilds({ id: user.id });
+					console.log(guilds);
 					res.json({ success: 'User successfully logged in', code, user: Object.assign(user, { guilds: guilds }, { token: jwt.sign(user, process.env.JWT_SECRET as string, { expiresIn: '1800s' }) }) });
 				} else {
 					res.json({ error: 'Incorrect password' });
@@ -48,5 +50,5 @@ export default function(_: Server) {
 				res.json({ error: err.message });
 			}
 		});
-	return router
+	return router;
 }

@@ -1,39 +1,74 @@
 import { useSession } from 'next-auth/react';
-import GuildIcon from '../../components/guildIcon';
 import React, { useState } from 'react';
-import ServerPopup from '../../components/server-popup';
 import Link from 'next/link';
-import type { session } from '../../types/datatypes';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import MyVerticallyCenteredModal from '../ServerModalPopup';
 
 function Feed() {
-	const [showModal, setShowModal] = useState(false);
 	const { data: session } = useSession();
-	console.log(session);
-	console.log(session.guilds);
+	const [modalShow, setModalShow] = useState(false);
+
+	// Render popup tooltip
+	const renderTooltip = (props: string) => (
+		<Tooltip id="button-tooltip">
+			<h6>{props}</h6>
+		</Tooltip>
+	);
 	return (
-		<div className="server-selector">
-			<ServerPopup onClose={() => setShowModal(false)}
-				show={showModal}/>
-			<div id="modal-root"></div>
-			<div className="server-icon-bg">
-				<Link href="/channels/@me">
-					<svg className="homeIcon-r0w4ny" aria-hidden="false" width="32" height="24" viewBox="0 0 32 20" style={{ color:'white' }} data-toggle="tooltip" data-placement="right">
-						<path fill="currentColor" d="M23.0212 1.67671C21.3107 0.879656 19.5079 0.318797 17.6584 0C17.4062 0.461742 17.1749 0.934541 16.9708 1.4184C15.003 1.12145 12.9974 1.12145 11.0283 1.4184C10.819 0.934541 10.589 0.461744 10.3368 0.00546311C8.48074 0.324393 6.67795 0.885118 4.96746 1.68231C1.56727 6.77853 0.649666 11.7538 1.11108 16.652C3.10102 18.1418 5.3262 19.2743 7.69177 20C8.22338 19.2743 8.69519 18.4993 9.09812 17.691C8.32996 17.3997 7.58522 17.0424 6.87684 16.6135C7.06531 16.4762 7.24726 16.3387 7.42403 16.1847C11.5911 18.1749 16.408 18.1749 20.5763 16.1847C20.7531 16.3332 20.9351 16.4762 21.1171 16.6135C20.41 17.0369 19.6639 17.3997 18.897 17.691C19.3052 18.4993 19.7718 19.2689 20.3021 19.9945C22.6677 19.2689 24.8929 18.1364 26.8828 16.6466H26.8893C27.43 10.9731 25.9665 6.04728 23.0212 1.67671ZM9.68041 13.6383C8.39754 13.6383 7.34085 12.4453 7.34085 10.994C7.34085 9.54272 8.37155 8.34973 9.68041 8.34973C10.9893 8.34973 12.0395 9.54272 12.0187 10.994C12.0187 12.4453 10.9828 13.6383 9.68041 13.6383ZM18.3161 13.6383C17.0332 13.6383 15.9765 12.4453 15.9765 10.994C15.9765 9.54272 17.0124 8.34973 18.3161 8.34973C19.6184 8.34973 20.6751 9.54272 20.6543 10.994C20.6543 12.4453 19.6184 13.6383 18.3161 13.6383Z">
-						</path>
-					</svg>
-				</Link>
-			</div>
-			{session.guilds.map(item => (
-				<GuildIcon guild={item} key={item.id} />
-			))}
-			<div className="server-icon-bg" data-toggle="tooltip" data-placement="right" title="Add a server">
-				<button onClick={(() => setShowModal(true))} className="btn">
-					<svg aria-hidden="false" className="icon" width="32" height="32" viewBox="0 0 24 24" type="button" data-toggle="modal" data-target="#exampleModalCenter">
-						<path fill="currentColor" d="M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"></path>
-					</svg>
-				</button>
-			</div>
-		</div>
+		<nav className="col" style={{ maxWidth: 84, maxHeight: '100vh' }}>
+			<MyVerticallyCenteredModal
+				show={modalShow}
+				onHide={() => setModalShow(false)}
+				startValue={0}
+			/>
+			<ul className="guilds-container">
+				<li className="squircle purple-boi">
+					<Link href="/channels/@me">
+						<svg aria-hidden="false" width={28} height={20} viewBox="0 0 28 20">
+							<path
+								fill="currentColor"
+								d="M20.6644 20C20.6644 20 19.8014 18.9762 19.0822 18.0714C22.2226 17.1905 23.4212 15.2381 23.4212 15.2381C22.4384 15.881 21.5034 16.3334 20.6644 16.6429C19.4658 17.1429 18.3151 17.4762 17.1884 17.6667C14.887 18.0953 12.7774 17.9762 10.9795 17.6429C9.61301 17.381 8.43836 17 7.45548 16.6191C6.90411 16.4048 6.30479 16.1429 5.70548 15.8096C5.63356 15.7619 5.56164 15.7381 5.48973 15.6905C5.44178 15.6667 5.41781 15.6429 5.39384 15.6191C4.96233 15.381 4.7226 15.2143 4.7226 15.2143C4.7226 15.2143 5.87329 17.1191 8.91781 18.0238C8.19863 18.9286 7.31164 20 7.31164 20C2.0137 19.8333 0 16.381 0 16.381C0 8.7144 3.45205 2.50017 3.45205 2.50017C6.90411 -0.07123 10.1884 0.000197861 10.1884 0.000197861L10.4281 0.285909C6.11301 1.52399 4.12329 3.40493 4.12329 3.40493C4.12329 3.40493 4.65068 3.11921 5.53767 2.71446C8.10274 1.59542 10.1404 1.2859 10.9795 1.21447C11.1233 1.19066 11.2432 1.16685 11.387 1.16685C12.8493 0.976379 14.5034 0.92876 16.2295 1.11923C18.5068 1.38114 20.9521 2.0478 23.4452 3.40493C23.4452 3.40493 21.5514 1.61923 17.476 0.381146L17.8116 0.000197861C17.8116 0.000197861 21.0959 -0.07123 24.5479 2.50017C24.5479 2.50017 28 8.7144 28 16.381C28 16.381 25.9623 19.8333 20.6644 20ZM9.51712 8.88106C8.15068 8.88106 7.07192 10.0715 7.07192 11.5239C7.07192 12.9763 8.17466 14.1667 9.51712 14.1667C10.8836 14.1667 11.9623 12.9763 11.9623 11.5239C11.9863 10.0715 10.8836 8.88106 9.51712 8.88106ZM18.2671 8.88106C16.9007 8.88106 15.8219 10.0715 15.8219 11.5239C15.8219 12.9763 16.9247 14.1667 18.2671 14.1667C19.6336 14.1667 20.7123 12.9763 20.7123 11.5239C20.7123 10.0715 19.6336 8.88106 18.2671 8.88106Z"
+							></path>
+						</svg>
+					</Link>
+				</li>
+				<li className="divider" />
+				{session?.guilds?.map(g => (
+					<OverlayTrigger placement="right" overlay={renderTooltip(g.guild.name)}>
+						<li className="squircle purple-boi">
+							<Link href={`/channels/${g.guild.id}/${g.guild.channels.sort((a, b) => a.position - b.position)[0].id}`}>
+								<img
+									src="https://cdn.discordapp.com/icons/489449496527503390/fa0f0e4cf2830aa8444ddb4c329b5162.webp?size=96"
+									alt="SoP"
+									className="server-icon"
+								/>
+							</Link>
+						</li>
+					</OverlayTrigger>
+				))}
+				<OverlayTrigger placement="right" overlay={renderTooltip('Add server')}>
+					<li className="squircle green-boi" onClick={() => setModalShow(true)}>
+						<svg aria-hidden="false" width={24} height={24} viewBox="0 0 24 24">
+							<path
+								fill="currentColor"
+								d="M20 11.1111H12.8889V4H11.1111V11.1111H4V12.8889H11.1111V20H12.8889V12.8889H20V11.1111Z"
+							/>
+						</svg>
+					</li>
+				</OverlayTrigger>
+				<OverlayTrigger placement="right" overlay={renderTooltip('Explore Public Servers')}>
+					<li className="squircle green-boi">
+						<svg aria-hidden="false" width={24} height={24} viewBox="0 0 24 24">
+							<path
+								fill="currentColor"
+								d="M12 10.9C11.39 10.9 10.9 11.39 10.9 12C10.9 12.61 11.39 13.1 12 13.1C12.61 13.1 13.1 12.61 13.1 12C13.1 11.39 12.61 10.9 12 10.9ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM14.19 14.19L6 18L9.81 9.81L18 6L14.19 14.19Z"
+							/>
+						</svg>
+					</li>
+				</OverlayTrigger>
+			</ul>
+		</nav>
 	);
 }
 

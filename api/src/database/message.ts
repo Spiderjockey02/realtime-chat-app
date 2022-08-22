@@ -1,4 +1,5 @@
 import client from './index';
+import Snowflake from '../utils/Snowflake';
 
 type fetchMessages = {
 	id: string
@@ -38,6 +39,7 @@ type createMessage = {
 export async function createMessage(data: createMessage) {
 	return client.message.create({
 		data: {
+			id: String(Snowflake.generate()),
 			text: data.text,
 			author: {
 				connect: {

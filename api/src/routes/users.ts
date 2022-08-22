@@ -32,5 +32,5 @@ export default function(_: Server) {
 			res.json(guilds);
 		});
 
-	return router
+	return router;
 }

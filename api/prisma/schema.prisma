@@ -81,7 +81,7 @@ model GuildMember {
   userId   String
   guild    Guild     @relation(fields: [guildId], references: [id])
   guildId  String
-  nickname String      @db.VarChar(32)
+  nickname String?      @db.VarChar(32)
   roles GuildMemberRole[]
 
   @@map("guild_members")
