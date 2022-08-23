@@ -1,26 +1,18 @@
 import { useSession } from 'next-auth/react';
-import '@popperjs/core';
 import ServerSelector from '../../components/panels/server-selector';
 import ChannelSelector from '../../components/panels/channel-selector';
-import TextSection from '../../components/panels/text-channel';
-import MemberSection from '../../components/panels/member-section';
-import type { Guild } from '../../types/datatypes';
-import type { GetServerSidePropsContext } from 'next';
-import { SocketProvider } from '../../components/socketio';
+import MemberList from '../../components/panels/member-section';
+import TextArea from '../../components/panels/text-channel';
+import ChannelHeader from '../../components/panels/channel-header';
+import React from 'react';
 
-interface Props {
-	server: Guild
-	messages: Array<any>
-}
 
-function HomePage({ server, messages }: Props) {
+export default function HomePage() {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 
-
-	if (typeof window !== 'undefined' && loading) return null;
-
 	// When rendering client side don't display anything until loading is complete
+	if (typeof window !== 'undefined' && loading) return null;
 	if (!session) {
 		return (
 			<div>
@@ -29,20 +21,26 @@ function HomePage({ server, messages }: Props) {
 		);
 	} else {
 		return (
-			<SocketProvider>
-				<div className="container-fluid custom-scrollbar">
-					<div className="row" style={{ height: '100vh' }}>
-						<ServerSelector />
-						<ChannelSelector guild={server} />
-						<TextSection messages={messages}/>
-						<MemberSection guild={server}/>
+			<div className="container-fluid" style={{ margin: 0, padding: 0 }}>
+				<div className="row">
+					<ServerSelector />
+					<ChannelSelector />
+					<div className="col" style={{ maxWidth: 'calc(100vw - 328px)' }}>
+						<ChannelHeader />
+						<div className="row">
+							<div style={{ width: 'calc(100vw - 590px)', minHeight: 'calc(100vh - 50px)', backgroundColor: 'var(--color-lighter-dark)', marginLeft: 12 }} >
+								<TextArea />
+							</div>
+							{/* Member role*/}
+							<MemberList />
+						</div>
 					</div>
 				</div>
-			</SocketProvider>
+			</div>
 		);
-
 	}
 }
+
 
 // This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -55,4 +53,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 	// Pass data to the page via props
 	return { props: { server: data, messages } };
 }
-export default HomePage;

@@ -1,9 +1,12 @@
-function Feed() {
+export default function Feed() {
+
 	return (
-		<div className="member-section">
-			<h1>Friend activity</h1>
-		</div>
+		<nav style={{ width: 232 }}>
+			<ul className="channels-container">
+				<li>
+					<h6>Friends activity here</h6>
+				</li>
+			</ul>
+		</nav>
 	);
 }
-
-export default Feed;
