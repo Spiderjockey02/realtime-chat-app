@@ -6,7 +6,7 @@ export default function DMSelector() {
 			</div>
 			<ul className="channels-container" style={{ 'maxWidth': '256px' }}>
 				<h6>Direct messages</h6>
-				<li className="channelItem onselect active">
+				<li className="channelItem onselect">
 					<p>Coming soon</p>
 				</li>
 			</ul>

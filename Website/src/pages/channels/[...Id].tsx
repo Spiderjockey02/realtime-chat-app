@@ -1,3 +1,5 @@
+import type { Guild } from '../../types/datatypes';
+import type { GetServerSidePropsContext } from 'next';
 import { useSession } from 'next-auth/react';
 import ServerSelector from '../../components/panels/server-selector';
 import ChannelSelector from '../../components/panels/channel-selector';
@@ -6,10 +8,17 @@ import TextArea from '../../components/panels/text-channel';
 import ChannelHeader from '../../components/panels/channel-header';
 import React from 'react';
 
+interface Props {
+	server: Guild
+	messages: Array<any>
+}
 
-export default function HomePage() {
+
+export default function HomePage({ server, messages }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
+	console.log('server', server);
+	console.log('message', messages);
 
 	// When rendering client side don't display anything until loading is complete
 	if (typeof window !== 'undefined' && loading) return null;
@@ -24,7 +33,7 @@ export default function HomePage() {
 			<div className="container-fluid" style={{ margin: 0, padding: 0 }}>
 				<div className="row">
 					<ServerSelector />
-					<ChannelSelector />
+					<ChannelSelector server={server}/>
 					<div className="col" style={{ maxWidth: 'calc(100vw - 328px)' }}>
 						<ChannelHeader />
 						<div className="row">

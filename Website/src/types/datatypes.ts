@@ -23,6 +23,7 @@ export type Channel = {
   id: string
   name: string
   type: 'TEXT' | 'VOICE' | 'CATEGORY'
+  position: number
   children: Channel[]
   parentId?: string
 }
