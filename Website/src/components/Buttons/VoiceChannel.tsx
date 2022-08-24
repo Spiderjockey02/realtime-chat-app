@@ -3,9 +3,10 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 interface Props {
   name: string
+  active: boolean
 }
 
-export default function voiceChannel({ name }: Props) {
+export default function voiceChannel({ name, active }: Props) {
 
 	// Render popup tooltip
 	const renderTooltip = (props: string) => (
@@ -15,7 +16,7 @@ export default function voiceChannel({ name }: Props) {
 	);
 
 	return (
-		<li className="channelItem onselect">
+		<li className={`channelItem onselect ${active ? 'active' : ''}`}>
 			<div className="icon">
 				<svg className="icon-2W8DHg" aria-hidden="true" role="img" width={24} height={24} viewBox="0 0 24 24">
 					<path

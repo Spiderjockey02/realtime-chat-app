@@ -5,17 +5,18 @@ import CategoryChannel from '../Buttons/CategoryChannel';
 
 interface Props {
 	server: Guild
+	activeChannel: Channel
 }
 
-function getChannelButton(channel: Channel) {
+function getChannelButton(channel: Channel, activeChannel: Channel) {
 	switch (channel.type) {
 		case 'TEXT':
 			return (
-				<TextChannel name={channel.name} />
+				<TextChannel name={channel.name} active={channel.id == activeChannel.id}/>
 			);
 		case 'VOICE':
 			return (
-				<VoiceChannel name={channel.name}/>
+				<VoiceChannel name={channel.name} active={channel.id == activeChannel.id}/>
 			);
 		case 'CATEGORY':
 			return (
@@ -25,7 +26,7 @@ function getChannelButton(channel: Channel) {
 }
 
 
-function Feed({ server }: Props) {
+function Feed({ server, activeChannel }: Props) {
 	return (
 		<nav className="col" style={{ maxWidth: '256px', maxHeight: '100vh' }}>
 			<div className="dropdown" style={{ borderBottom: '1px solid black' }}>
@@ -112,7 +113,7 @@ function Feed({ server }: Props) {
 			</div>
 			<ul className="channels-container" style={{ 'maxWidth': '256px' }}>
 				{server.channels.sort((a, b) => a.position - b.position).map(c => (
-					getChannelButton(c)
+					getChannelButton(c, activeChannel)
 				))}
 
 				<li className="channelItem collapse onselect" id="collapseExample">

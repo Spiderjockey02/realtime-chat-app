@@ -45,7 +45,7 @@ export default function(io: Server) {
 				console.log(req.body);
 				const { id } = await createMessage({
 					text: req.body.message,
-					userId: 'cl6jimrn6000058uv5x4kk7p0',
+					userId: req.body.userId,
 					channelId: req.params.channelId,
 				});
 				const message = await fetchMessage({ id });

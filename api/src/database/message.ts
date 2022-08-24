@@ -12,6 +12,7 @@ export async function fetchMessages(data: fetchMessages) {
 		},
 		include: {
 			author: true,
+			embeds: true,
 		},
 	});
 }
@@ -37,6 +38,7 @@ type createMessage = {
 }
 
 export async function createMessage(data: createMessage) {
+	console.log(data);
 	return client.message.create({
 		data: {
 			id: String(Snowflake.generate()),

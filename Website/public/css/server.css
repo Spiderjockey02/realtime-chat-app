@@ -400,6 +400,7 @@ ul, .row > * {
 	font-family: 'Roboto', sans-serif;
 	line-height: 170%;
 	border: 1px solid rgba(255, 255, 255, 0.05);
+	height: calc(100% - 70px);
 }
 
 .discord-messages.discord-light-theme {
@@ -409,7 +410,7 @@ ul, .row > * {
 }
 
 .discord-message {
-	color: #dcddde;
+	color: #fff;
 	display: flex;
 	font-size: 0.9em;
 	margin: 1em 0;

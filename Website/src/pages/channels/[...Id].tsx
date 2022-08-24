@@ -1,4 +1,4 @@
-import type { Guild } from '../../types/datatypes';
+import type { Guild, Channel } from '../../types/datatypes';
 import type { GetServerSidePropsContext } from 'next';
 import { useSession } from 'next-auth/react';
 import ServerSelector from '../../components/panels/server-selector';
@@ -11,10 +11,11 @@ import React from 'react';
 interface Props {
 	server: Guild
 	messages: Array<any>
+	channel: Channel
 }
 
 
-export default function HomePage({ server, messages }: Props) {
+export default function HomePage({ server, messages, channel }: Props) {
 	const { data: session, status } = useSession();
 	const loading = status === 'loading';
 	console.log('server', server);
@@ -33,12 +34,12 @@ export default function HomePage({ server, messages }: Props) {
 			<div className="container-fluid" style={{ margin: 0, padding: 0 }}>
 				<div className="row">
 					<ServerSelector />
-					<ChannelSelector server={server}/>
+					<ChannelSelector server={server} activeChannel={channel}/>
 					<div className="col" style={{ maxWidth: 'calc(100vw - 328px)' }}>
-						<ChannelHeader />
+						<ChannelHeader channel={channel}/>
 						<div className="row">
 							<div style={{ width: 'calc(100vw - 590px)', minHeight: 'calc(100vh - 50px)', backgroundColor: 'var(--color-lighter-dark)', marginLeft: 12 }} >
-								<TextArea />
+								<TextArea channel={channel} messages={messages}/>
 							</div>
 							{/* Member role*/}
 							<MemberList />
@@ -60,5 +61,5 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 	const mesdata = await fetch(`${process.env.NEXT_PUBLIC_APIURL}/api/channels/${context.params?.Id?.[1]}/messages`);
 	const messages = await mesdata.json();
 	// Pass data to the page via props
-	return { props: { server: data, messages } };
+	return { props: { server: data, messages, channel: data.channels.find(c => c.id == context.params?.Id?.[1]) } };
 }
